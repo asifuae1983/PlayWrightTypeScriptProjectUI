@@ -1,0 +1,30 @@
+{
+  "contactUs": {
+    "namePrefix": "Contact",
+    "emailPrefix": "contact",
+    "subject": "Test Subject - Query from JSON",
+    "message": "This is a test message for the contact us form, loaded from a JSON file.",
+    "testFileName": "testfile_from_json.txt",
+    "testFileContent": "This is a test file for upload, created based on JSON config."
+  },
+  "review": {
+     "namePrefix": "Reviewer",
+     "emailPrefix": "reviewer",
+     "reviewMessage": "This is a great product! Highly recommended. (From JSON)"
+  },
+  "homepageSubscription": {
+    "emailPrefix": "hpsubscriber",
+    "expectedSuccessMessage": "You have been successfully subscribed!"
+  },
+  "cartPageSubscription": {
+    "emailPrefix": "cartsubscriber",
+    "expectedSuccessMessage": "You have been successfully subscribed!"
+  },
+  "paymentDetails": {
+    "nameOnCard": "Checkout UserReg",
+    "cardNumber": "4111111111111111",
+    "cvc": "123",
+    "expiryMonth": "01",
+    "expiryYear": "2028"
+  }
+}

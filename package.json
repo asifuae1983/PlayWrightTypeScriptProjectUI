@@ -1,0 +1,27 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asifqa123/Selenium_TestNG.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asifqa123/Selenium_TestNG/issues"
+  },
+  "homepage": "https://github.com/asifqa123/Selenium_TestNG#readme",
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1", // Using a recent version, you can update if needed
+    "@types/node": "^22.15.29",
+    "allure-playwright": "^3.2.2",
+    "playwright": "^1.52.0",
+    "typescript": "^5.8.3"
+  }
+}

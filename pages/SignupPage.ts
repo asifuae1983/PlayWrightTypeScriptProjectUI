@@ -1,0 +1,166 @@
+import { type Page, type Locator } from '@playwright/test';
+
+// Interface for account information, matching typical userData structure
+export interface AccountInformation {
+    title: 'Mr' | 'Mrs'; // Or string if more titles are possible
+    password?: string; // Optional if not always set here
+    name?: string; // Name used for signup, distinct from address firstName/lastName
+    email?: string; // Optional if already handled by LoginPage
+    dayOfBirth: string;
+    monthOfBirth: string; // e.g., "January", "01", or number - depends on selectOption usage
+    yearOfBirth: string;
+    newsletter?: boolean;
+    optin?: boolean;
+}
+
+// Interface for address information
+export interface AddressInformation {
+    firstName: string;
+    lastName: string;
+    company?: string;
+    address1: string;
+    address2?: string;
+    country: string; // This will be the value for selectOption
+    state: string;
+    city: string;
+    zipcode: string;
+    mobileNumber: string;
+}
+
+// Combined interface for full signup details often used in tests
+export interface SignupUserDetails extends AccountInformation, AddressInformation {
+    // email is usually critical and comes from initial signup step on LoginPage
+    email: string;
+    // password is also critical
+    password: string;
+}
+
+
+export class SignupPage {
+    readonly page: Page;
+    // Account Information
+    readonly accountInfoText: Locator;
+    readonly titleMrRadio: Locator;
+    readonly titleMrsRadio: Locator;
+    readonly passwordInput: Locator;
+    readonly daysDropdown: Locator;
+    readonly monthsDropdown: Locator;
+    readonly yearsDropdown: Locator;
+    readonly newsletterCheckbox: Locator;
+    readonly optinCheckbox: Locator;
+    // Address Information
+    readonly firstNameInput: Locator;
+    readonly lastNameInput: Locator;
+    readonly companyInput: Locator;
+    readonly address1Input: Locator;
+    readonly address2Input: Locator;
+    readonly countryDropdown: Locator;
+    readonly stateInput: Locator;
+    readonly cityInput: Locator;
+    readonly zipcodeInput: Locator;
+    readonly mobileNumberInput: Locator;
+    readonly createAccountButton: Locator;
+    readonly accountCreatedText: Locator;
+    readonly continueButton: Locator;
+
+    constructor(page: Page) {
+        this.page = page;
+        this.accountInfoText = page.locator('h2 b:has-text("Enter Account Information")');
+        this.titleMrRadio = page.locator('#id_gender1');
+        this.titleMrsRadio = page.locator('#id_gender2');
+        this.passwordInput = page.locator('#password');
+        this.daysDropdown = page.locator('#days');
+        this.monthsDropdown = page.locator('#months');
+        this.yearsDropdown = page.locator('#years');
+        this.newsletterCheckbox = page.locator('#newsletter');
+        this.optinCheckbox = page.locator('#optin');
+        this.firstNameInput = page.locator('#first_name');
+        this.lastNameInput = page.locator('#last_name');
+        this.companyInput = page.locator('#company');
+        this.address1Input = page.locator('#address1');
+        this.address2Input = page.locator('#address2');
+        this.countryDropdown = page.locator('#country');
+        this.stateInput = page.locator('#state');
+        this.cityInput = page.locator('#city');
+        this.zipcodeInput = page.locator('#zipcode');
+        this.mobileNumberInput = page.locator('#mobile_number');
+        this.createAccountButton = page.locator('button[data-qa="create-account"]');
+        this.accountCreatedText = page.locator('h2[data-qa="account-created"]'); // 'ACCOUNT CREATED!'
+        this.continueButton = page.locator('a[data-qa="continue-button"]');
+    }
+
+    async fillAccountInformationPart(data: AccountInformation): Promise<void> {
+        if (data.title === 'Mr') {
+            await this.titleMrRadio.check();
+        } else if (data.title === 'Mrs') {
+            await this.titleMrsRadio.check();
+        }
+        if(data.password) await this.passwordInput.fill(data.password);
+
+        await this.daysDropdown.waitFor({ state: 'visible', timeout: 5000 });
+        await this.daysDropdown.selectOption(data.dayOfBirth);
+
+        await this.monthsDropdown.waitFor({ state: 'visible', timeout: 5000 });
+        // Assuming monthOfBirth is the textual name e.g. "January" or numeric string e.g. "1"
+        // Playwright's selectOption can usually handle both value and label.
+        await this.monthsDropdown.selectOption(data.monthOfBirth);
+
+        await this.yearsDropdown.waitFor({ state: 'visible', timeout: 5000 });
+        await this.yearsDropdown.selectOption(data.yearOfBirth);
+
+        if (data.newsletter) {
+            await this.newsletterCheckbox.check();
+        }
+        if (data.optin) {
+            await this.optinCheckbox.check();
+        }
+    }
+
+    async fillAddressInformationPart(data: AddressInformation): Promise<void> {
+        await this.firstNameInput.fill(data.firstName);
+        await this.lastNameInput.fill(data.lastName);
+        if(data.company) await this.companyInput.fill(data.company);
+        await this.address1Input.fill(data.address1);
+        if(data.address2) await this.address2Input.fill(data.address2);
+
+        await this.countryDropdown.waitFor({ state: 'visible', timeout: 5000 });
+        await this.countryDropdown.selectOption(data.country); // e.g. "United States"
+
+        await this.stateInput.fill(data.state);
+        await this.cityInput.fill(data.city);
+        await this.zipcodeInput.fill(data.zipcode);
+        await this.mobileNumberInput.fill(data.mobileNumber);
+    }
+
+    // Combined method often used in tests after initial name/email signup
+    async fillAccountDetails(data: SignupUserDetails): Promise<void> {
+        await this.fillAccountInformationPart(data); // data conforms to AccountInformation
+        await this.fillAddressInformationPart(data); // data conforms to AddressInformation
+    }
+
+    // Original methods from JS, now typed
+    async fillAccountInformation(title: 'Mr' | 'Mrs', password: string, day: string, month: string, year: string, newsletter: boolean, optin: boolean): Promise<void> {
+        await this.fillAccountInformationPart({ title, password, dayOfBirth: day, monthOfBirth: month, yearOfBirth: year, newsletter, optin });
+    }
+
+    async fillAddressInformation(firstName: string, lastName: string, company: string | undefined, address1: string, address2: string | undefined, country: string, state: string, city: string, zipcode: string, mobileNumber: string): Promise<void> {
+        await this.fillAddressInformationPart({ firstName, lastName, company, address1, address2, country, state, city, zipcode, mobileNumber });
+    }
+
+
+    async clickCreateAccountButton(): Promise<void> {
+        await this.createAccountButton.click();
+    }
+
+    async isAccountCreatedVisible(): Promise<boolean> {
+        return await this.accountCreatedText.isVisible();
+    }
+
+    async clickContinueButton(): Promise<void> {
+        await this.continueButton.click();
+    }
+
+    async isAccountInfoTextVisible(): Promise<boolean> {
+        return await this.accountInfoText.isVisible();
+    }
+}

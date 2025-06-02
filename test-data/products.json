@@ -1,0 +1,20 @@
+{
+  "searchProduct": {
+    "searchTerm": "Blue Top",
+    "expectedProductName": "Blue Top"
+  },
+  "viewProduct": {
+    "productIndex": 0
+  },
+  "addProductsToCart": {
+    "products": [
+      { "name": "Blue Top", "price": "Rs. 500", "idForCartInteractions": "1" },
+      { "name": "Men Tshirt", "price": "Rs. 400", "idForCartInteractions": "2" }
+    ]
+  },
+  "verifyProductQuantity": {
+    "productToViewIndex": 0,
+    "quantityToSet": 4,
+    "expectedProductName": "Blue Top"
+  }
+}

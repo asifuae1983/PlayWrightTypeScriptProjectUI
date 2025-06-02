@@ -1,0 +1,596 @@
+# Test info
+
+- Name: Test Case 12: Add Products in Cart >> should add specified products to cart and verify them
+- Location: /app/tests/addProductsInCart.spec.js:26:5
+
+# Error details
+
+```
+TimeoutError: locator.innerText: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator('//div[@class=\'productinfo\' and ./p[normalize-space(text())=\'Blue Top\']]/h2').first()
+
+    at ProductsPage.getProductPriceFromListing (/app/pages/ProductsPage.js:104:36)
+    at /app/tests/addProductsInCart.spec.js:42:65
+```
+
+# Page snapshot
+
+```yaml
+- banner:
+  - link "Website for automation practice":
+    - /url: /
+    - img "Website for automation practice"
+  - list:
+    - listitem:
+      - link " Home":
+        - /url: /
+    - listitem:
+      - link " Products":
+        - /url: /products
+    - listitem:
+      - link " Cart":
+        - /url: /view_cart
+    - listitem:
+      - link " Signup / Login":
+        - /url: /login
+    - listitem:
+      - link " Test Cases":
+        - /url: /test_cases
+    - listitem:
+      - link " API Testing":
+        - /url: /api_list
+    - listitem:
+      - link " Video Tutorials":
+        - /url: https://www.youtube.com/c/AutomationExercise
+    - listitem:
+      - link " Contact us":
+        - /url: /contact_us
+- img "Website for practice"
+- textbox "Search Product"
+- button ""
+- heading "Category" [level=2]
+- heading " Women" [level=4]:
+  - link " Women":
+    - /url: "#Women"
+- heading " Men" [level=4]:
+  - link " Men":
+    - /url: "#Men"
+- heading " Kids" [level=4]:
+  - link " Kids":
+    - /url: "#Kids"
+- insertion:
+  - iframe
+- heading "Brands" [level=2]
+- list:
+  - listitem:
+    - link "(6) Polo":
+      - /url: /brand_products/Polo
+  - listitem:
+    - link "(5) H&M":
+      - /url: /brand_products/H&M
+  - listitem:
+    - link "(5) Madame":
+      - /url: /brand_products/Madame
+  - listitem:
+    - link "(3) Mast & Harbour":
+      - /url: /brand_products/Mast & Harbour
+  - listitem:
+    - link "(4) Babyhug":
+      - /url: /brand_products/Babyhug
+  - listitem:
+    - link "(3) Allen Solly Junior":
+      - /url: /brand_products/Allen Solly Junior
+  - listitem:
+    - link "(3) Kookie Kids":
+      - /url: /brand_products/Kookie Kids
+  - listitem:
+    - link "(5) Biba":
+      - /url: /brand_products/Biba
+- heading "All Products" [level=2]
+- img "ecommerce website products"
+- heading "Rs. 500" [level=2]
+- paragraph: Blue Top
+- text:  Add to cart
+- heading "Rs. 500" [level=2]
+- paragraph: Blue Top
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/1
+- img "ecommerce website products"
+- heading "Rs. 400" [level=2]
+- paragraph: Men Tshirt
+- text:  Add to cart
+- heading "Rs. 400" [level=2]
+- paragraph: Men Tshirt
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/2
+- img "ecommerce website products"
+- heading "Rs. 1000" [level=2]
+- paragraph: Sleeveless Dress
+- text:  Add to cart
+- heading "Rs. 1000" [level=2]
+- paragraph: Sleeveless Dress
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/3
+- img "ecommerce website products"
+- heading "Rs. 1500" [level=2]
+- paragraph: Stylish Dress
+- text:  Add to cart
+- heading "Rs. 1500" [level=2]
+- paragraph: Stylish Dress
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/4
+- img "ecommerce website products"
+- heading "Rs. 600" [level=2]
+- paragraph: Winter Top
+- text:  Add to cart
+- heading "Rs. 600" [level=2]
+- paragraph: Winter Top
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/5
+- img "ecommerce website products"
+- heading "Rs. 400" [level=2]
+- paragraph: Summer White Top
+- text:  Add to cart
+- heading "Rs. 400" [level=2]
+- paragraph: Summer White Top
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/6
+- img "ecommerce website products"
+- heading "Rs. 1000" [level=2]
+- paragraph: Madame Top For Women
+- text:  Add to cart
+- heading "Rs. 1000" [level=2]
+- paragraph: Madame Top For Women
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/7
+- img "ecommerce website products"
+- heading "Rs. 700" [level=2]
+- paragraph: Fancy Green Top
+- text:  Add to cart
+- heading "Rs. 700" [level=2]
+- paragraph: Fancy Green Top
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/8
+- img "ecommerce website products"
+- heading "Rs. 499" [level=2]
+- paragraph: Sleeves Printed Top - White
+- text:  Add to cart
+- heading "Rs. 499" [level=2]
+- paragraph: Sleeves Printed Top - White
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/11
+- img "ecommerce website products"
+- heading "Rs. 359" [level=2]
+- paragraph: Half Sleeves Top Schiffli Detailing - Pink
+- text:  Add to cart
+- heading "Rs. 359" [level=2]
+- paragraph: Half Sleeves Top Schiffli Detailing - Pink
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/12
+- img "ecommerce website products"
+- heading "Rs. 278" [level=2]
+- paragraph: Frozen Tops For Kids
+- text:  Add to cart
+- heading "Rs. 278" [level=2]
+- paragraph: Frozen Tops For Kids
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/13
+- img "ecommerce website products"
+- heading "Rs. 679" [level=2]
+- paragraph: Full Sleeves Top Cherry - Pink
+- text:  Add to cart
+- heading "Rs. 679" [level=2]
+- paragraph: Full Sleeves Top Cherry - Pink
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/14
+- img "ecommerce website products"
+- heading "Rs. 315" [level=2]
+- paragraph: Printed Off Shoulder Top - White
+- text:  Add to cart
+- heading "Rs. 315" [level=2]
+- paragraph: Printed Off Shoulder Top - White
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/15
+- img "ecommerce website products"
+- heading "Rs. 478" [level=2]
+- paragraph: Sleeves Top and Short - Blue & Pink
+- text:  Add to cart
+- heading "Rs. 478" [level=2]
+- paragraph: Sleeves Top and Short - Blue & Pink
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/16
+- img "ecommerce website products"
+- heading "Rs. 1200" [level=2]
+- paragraph: Little Girls Mr. Panda Shirt
+- text:  Add to cart
+- heading "Rs. 1200" [level=2]
+- paragraph: Little Girls Mr. Panda Shirt
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/18
+- img "ecommerce website products"
+- heading "Rs. 1050" [level=2]
+- paragraph: Sleeveless Unicorn Patch Gown - Pink
+- text:  Add to cart
+- heading "Rs. 1050" [level=2]
+- paragraph: Sleeveless Unicorn Patch Gown - Pink
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/19
+- img "ecommerce website products"
+- heading "Rs. 1190" [level=2]
+- paragraph: Cotton Mull Embroidered Dress
+- text:  Add to cart
+- heading "Rs. 1190" [level=2]
+- paragraph: Cotton Mull Embroidered Dress
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/20
+- img "ecommerce website products"
+- heading "Rs. 1530" [level=2]
+- paragraph: Blue Cotton Indie Mickey Dress
+- text:  Add to cart
+- heading "Rs. 1530" [level=2]
+- paragraph: Blue Cotton Indie Mickey Dress
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/21
+- img "ecommerce website products"
+- heading "Rs. 1600" [level=2]
+- paragraph: Long Maxi Tulle Fancy Dress Up Outfits -Pink
+- text:  Add to cart
+- heading "Rs. 1600" [level=2]
+- paragraph: Long Maxi Tulle Fancy Dress Up Outfits -Pink
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/22
+- img "ecommerce website products"
+- heading "Rs. 1100" [level=2]
+- paragraph: Sleeveless Unicorn Print Fit & Flare Net Dress - Multi
+- text:  Add to cart
+- heading "Rs. 1100" [level=2]
+- paragraph: Sleeveless Unicorn Print Fit & Flare Net Dress - Multi
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/23
+- img "ecommerce website products"
+- heading "Rs. 849" [level=2]
+- paragraph: Colour Blocked Shirt – Sky Blue
+- text:  Add to cart
+- heading "Rs. 849" [level=2]
+- paragraph: Colour Blocked Shirt – Sky Blue
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/24
+- img "ecommerce website products"
+- heading "Rs. 1299" [level=2]
+- paragraph: Pure Cotton V-Neck T-Shirt
+- text:  Add to cart
+- heading "Rs. 1299" [level=2]
+- paragraph: Pure Cotton V-Neck T-Shirt
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/28
+- img "ecommerce website products"
+- heading "Rs. 1000" [level=2]
+- paragraph: Green Side Placket Detail T-Shirt
+- text:  Add to cart
+- heading "Rs. 1000" [level=2]
+- paragraph: Green Side Placket Detail T-Shirt
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/29
+- img "ecommerce website products"
+- heading "Rs. 1500" [level=2]
+- paragraph: Premium Polo T-Shirts
+- text:  Add to cart
+- heading "Rs. 1500" [level=2]
+- paragraph: Premium Polo T-Shirts
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/30
+- img "ecommerce website products"
+- heading "Rs. 850" [level=2]
+- paragraph: Pure Cotton Neon Green Tshirt
+- text:  Add to cart
+- heading "Rs. 850" [level=2]
+- paragraph: Pure Cotton Neon Green Tshirt
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/31
+- img "ecommerce website products"
+- heading "Rs. 799" [level=2]
+- paragraph: Soft Stretch Jeans
+- text:  Add to cart
+- heading "Rs. 799" [level=2]
+- paragraph: Soft Stretch Jeans
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/33
+- img "ecommerce website products"
+- heading "Rs. 1200" [level=2]
+- paragraph: Regular Fit Straight Jeans
+- text:  Add to cart
+- heading "Rs. 1200" [level=2]
+- paragraph: Regular Fit Straight Jeans
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/35
+- img "ecommerce website products"
+- heading "Rs. 1400" [level=2]
+- paragraph: Grunt Blue Slim Fit Jeans
+- text:  Add to cart
+- heading "Rs. 1400" [level=2]
+- paragraph: Grunt Blue Slim Fit Jeans
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/37
+- img "ecommerce website products"
+- heading "Rs. 2300" [level=2]
+- paragraph: Rose Pink Embroidered Maxi Dress
+- text:  Add to cart
+- heading "Rs. 2300" [level=2]
+- paragraph: Rose Pink Embroidered Maxi Dress
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/38
+- img "ecommerce website products"
+- heading "Rs. 3000" [level=2]
+- paragraph: Cotton Silk Hand Block Print Saree
+- text:  Add to cart
+- heading "Rs. 3000" [level=2]
+- paragraph: Cotton Silk Hand Block Print Saree
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/39
+- img "ecommerce website products"
+- heading "Rs. 3500" [level=2]
+- paragraph: Rust Red Linen Saree
+- text:  Add to cart
+- heading "Rs. 3500" [level=2]
+- paragraph: Rust Red Linen Saree
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/40
+- img "ecommerce website products"
+- heading "Rs. 5000" [level=2]
+- paragraph: Beautiful Peacock Blue Cotton Linen Saree
+- text:  Add to cart
+- heading "Rs. 5000" [level=2]
+- paragraph: Beautiful Peacock Blue Cotton Linen Saree
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/41
+- img "ecommerce website products"
+- heading "Rs. 1400" [level=2]
+- paragraph: Lace Top For Women
+- text:  Add to cart
+- heading "Rs. 1400" [level=2]
+- paragraph: Lace Top For Women
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/42
+- img "ecommerce website products"
+- heading "Rs. 1389" [level=2]
+- paragraph: GRAPHIC DESIGN MEN T SHIRT - BLUE
+- text:  Add to cart
+- heading "Rs. 1389" [level=2]
+- paragraph: GRAPHIC DESIGN MEN T SHIRT - BLUE
+- text:  Add to cart
+- list:
+  - listitem:
+    - link " View Product":
+      - /url: /product_details/43
+- insertion
+- contentinfo:
+  - heading "Subscription" [level=2]
+  - textbox "Your email address"
+  - button ""
+  - paragraph: Get the most recent updates from our site and be updated your self...
+  - paragraph: Copyright © 2021 All rights reserved
+```
+
+# Test source
+
+```ts
+   4 |         this.page = page;
+   5 |         this.allProductsText = 'h2.title:has-text("All Products")';
+   6 |         this.productList = '.features_items .col-sm-4';
+   7 |         this.firstProductViewLink = '.features_items .col-sm-4:first-child .choose a';
+   8 |         this.searchProductInput = '#search_product';
+   9 |         this.submitSearchButton = '#submit_search';
+   10 |         this.searchedProductsText = 'h2.title:has-text("Searched Products")';
+   11 |         // Product Detail Page selectors
+   12 |         this.productName = '.product-information h2';
+   13 |         this.productCategory = '.product-information p:has-text("Category:")';
+   14 |         this.productPriceDetail = '.product-information span span'; // Price on detail page
+   15 |         this.productAvailability = '.product-information p:has-text("Availability:")';
+   16 |         this.productCondition = '.product-information p:has-text("Condition:")';
+   17 |         this.productBrand = '.product-information p:has-text("Brand:")';
+   18 |         this.quantityInput = '#quantity';
+   19 |         this.addToCartButtonDetail = 'button[type="button"].cart'; // Add to cart on Product Detail
+   20 |         //Review selectors
+   21 |         this.reviewFormName = '#name';
+   22 |         this.reviewFormEmail = '#email';
+   23 |         this.reviewFormMessage = '#review';
+   24 |         this.reviewSubmitButton = '#button-review';
+   25 |         this.reviewSuccessMessage = '#review-section div[class="alert alert-success"] span';
+   26 |
+   27 |         // New selectors for product listing items
+   28 |         this.productItemByName = (name) => `//div[@class='productinfo' and ./p[normalize-space(text())='${name}']]`; // XPath to find product container by name precisely matching product name in <p>
+   29 |         this.addToCartButtonListing = (name) => `${this.productItemByName(name)}//a[contains(@class, 'add-to-cart')]`;
+   30 |         this.productPriceListing = (name) => `${this.productItemByName(name)}/h2`; // Selector for price on listing
+   31 |
+   32 |         // Modal selectors
+   33 |         this.addedModal = '.modal-content'; // Selector for the "Added!" or "View Cart" modal
+   34 |         this.continueShoppingButton = '.modal-footer button.btn-success, .modal-footer button.btn-block'; // More robust selector
+   35 |         this.viewCartLinkInModal = '.modal-body a[href="/view_cart"]';
+   36 |     }
+   37 |
+   38 |     async isAllProductsVisible() {
+   39 |         return await this.page.locator(this.allProductsText).isVisible();
+   40 |     }
+   41 |
+   42 |     async getProductCount() {
+   43 |         return await this.page.locator(this.productList).count();
+   44 |     }
+   45 |
+   46 |     async clickViewProduct(productIndex = 0) {
+   47 |         const productLinks = await this.page.locator('.features_items .col-sm-4 .choose a');
+   48 |         await productLinks.nth(productIndex).click();
+   49 |     }
+   50 |
+   51 |     async searchProduct(productName) {
+   52 |         await this.page.locator(this.searchProductInput).fill(productName);
+   53 |         await this.page.locator(this.submitSearchButton).click();
+   54 |     }
+   55 |
+   56 |     async isSearchedProductsVisible() {
+   57 |         return await this.page.locator(this.searchedProductsText).isVisible();
+   58 |     }
+   59 |
+   60 |     async getProductName() {
+   61 |         return await this.page.locator(this.productName).textContent();
+   62 |     }
+   63 |
+   64 |     async getProductCategory() {
+   65 |         return await this.page.locator(this.productCategory).textContent();
+   66 |     }
+   67 |
+   68 |     async getProductPriceDetail() { // Renamed to avoid conflict
+   69 |         return await this.page.locator(this.productPriceDetail).textContent();
+   70 |     }
+   71 |
+   72 |     async setQuantity(quantity) {
+   73 |         await this.page.locator(this.quantityInput).fill(quantity.toString());
+   74 |     }
+   75 |
+   76 |     async clickAddToCartOnDetailPage() { // Renamed for clarity
+   77 |         await this.page.locator(this.addToCartButtonDetail).click();
+   78 |     }
+   79 |
+   80 |     async fillReview(name, email, message) {
+   81 |         await this.page.locator(this.reviewFormName).fill(name);
+   82 |         await this.page.locator(this.reviewFormEmail).fill(email);
+   83 |         await this.page.locator(this.reviewFormMessage).fill(message);
+   84 |         await this.page.locator(this.reviewSubmitButton).click();
+   85 |     }
+   86 |
+   87 |     async getReviewSuccessMessage() {
+   88 |         return await this.page.locator(this.reviewSuccessMessage).textContent();
+   89 |     }
+   90 |
+   91 |     // New methods for Test Case 12
+   92 |     async addProductToCartByName(productName) {
+   93 |         // The products page might require hover to show the "Add to cart" button
+   94 |         // For some products, the button is always visible.
+   95 |         const productContainerLocator = this.page.locator(this.productItemByName(productName)).first();
+   96 |         await productContainerLocator.hover(); // Hover to ensure button is visible if needed
+   97 |
+   98 |         const addToCartButton = this.page.locator(this.addToCartButtonListing(productName)).first();
+   99 |         await addToCartButton.click();
+  100 |     }
+  101 |
+  102 |     async getProductPriceFromListing(productName) {
+  103 |         const priceElement = this.page.locator(this.productPriceListing(productName)).first();
+> 104 |         return (await priceElement.innerText()).trim();
+      |                                    ^ TimeoutError: locator.innerText: Timeout 10000ms exceeded.
+  105 |     }
+  106 |
+  107 |     async clickContinueShopping() {
+  108 |         const continueButton = this.page.locator(this.continueShoppingButton);
+  109 |         await continueButton.waitFor({ state: 'visible', timeout: 10000 });
+  110 |         await continueButton.click();
+  111 |         // Wait for modal to disappear
+  112 |         await this.page.waitForSelector(this.addedModal, { state: 'hidden', timeout: 5000 });
+  113 |     }
+  114 |
+  115 |     async clickAddToCart() { // Generic, might be ambiguous now. Keeping for product detail page.
+  116 |         await this.page.locator(this.addToCartButtonDetail).click();
+  117 |     }
+  118 | }
+  119 |
+  120 | module.exports = { ProductsPage };
+  121 |
+```
