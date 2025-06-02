@@ -1,16 +1,16 @@
 # Test info
 
 - Name: Test Case 13: Verify Product quantity in Cart >> should set product quantity, add to cart, and verify quantity in cart
-- Location: /app/tests/verifyProductQuantityInCart.spec.js:24:5
+- Location: /app/tests/verifyProductQuantityInCart.spec.ts:23:9
 
 # Error details
 
 ```
-Error: expect(received).toBe(expected) // Object.is equality
+Error: locator.textContent: Unsupported token "@class" while parsing css selector "./td[@class='cart_quantity']/button[@class='disabled']". Did you mean to CSS.escape it?
+Call log:
+  - waiting for //td[@class='cart_description']//a[text()='Blue Top']/ancestor::tr[1] >> ./td[@class='cart_quantity']/button[@class='disabled']
 
-Expected: true
-Received: false
-    at /app/tests/verifyProductQuantityInCart.spec.js:54:56
+    at /app/tests/verifyProductQuantityInCart.spec.ts:58:68
 ```
 
 # Page snapshot
@@ -89,73 +89,69 @@ Received: false
 # Test source
 
 ```ts
-   1 | // tests/verifyProductQuantityInCart.spec.js
-   2 | const { test, expect } = require('@playwright/test');
-   3 | const { HomePage } = require('../pages/HomePage');
-   4 | const { ProductsPage } = require('../pages/ProductsPage');
-   5 | const { CartPage } = require('../pages/CartPage');
-   6 | const { Utils } = require('../utils/utils');
+   1 | import { test, expect, type Page, type Locator } from '@playwright/test';
+   2 | import { HomePage } from '../pages/HomePage';
+   3 | import { ProductsPage } from '../pages/ProductsPage';
+   4 | import { CartPage } from '../pages/CartPage';
+   5 | import { Utils } from '../utils/utils';
+   6 | import type { ProductsFile } from 'types/testData';
    7 |
-   8 | // Load product data
-   9 | const productsTestData = Utils.loadTestData('products.json');
-  10 | const testData = productsTestData.verifyProductQuantity;
-  11 |
-  12 | test.describe('Test Case 13: Verify Product quantity in Cart', () => {
-  13 |     let homePage;
-  14 |     let productsPage;
-  15 |     let cartPage;
-  16 |
-  17 |     test.beforeEach(async ({ page }) => {
-  18 |         homePage = new HomePage(page);
-  19 |         productsPage = new ProductsPage(page);
-  20 |         cartPage = new CartPage(page);
-  21 |         await homePage.goto();
-  22 |     });
-  23 |
-  24 |     test('should set product quantity, add to cart, and verify quantity in cart', async ({ page }) => {
-  25 |         // 1. Launch browser and navigate to URL (handled by beforeEach)
-  26 |         // 2. Verify that home page is visible successfully
-  27 |         await expect(page).toHaveURL('https://automationexercise.com/');
+   8 | const productsTestData = Utils.loadTestData('products.json') as ProductsFile;
+   9 | const testData = productsTestData.verifyProductQuantity;
+  10 |
+  11 | test.describe('Test Case 13: Verify Product quantity in Cart', () => {
+  12 |     let homePage: HomePage;
+  13 |     let productsPage: ProductsPage;
+  14 |     let cartPage: CartPage;
+  15 |
+  16 |     test.beforeEach(async ({ page }: { page: Page }) => {
+  17 |         homePage = new HomePage(page);
+  18 |         productsPage = new ProductsPage(page);
+  19 |         cartPage = new CartPage(page);
+  20 |         await homePage.goto();
+  21 |     });
+  22 |
+  23 |     test('should set product quantity, add to cart, and verify quantity in cart', async ({ page }: { page: Page }) => {
+  24 |         await expect(page).toHaveURL('https://automationexercise.com/');
+  25 |
+  26 |         await homePage.clickProductsLink();
+  27 |         await expect(productsPage.isAllProductsVisible()).resolves.toBe(true);
   28 |
-  29 |         // 3. Click 'View Product' for the product specified by index in testData
-  30 |         // First, navigate to products page to be able to click on a product by index
-  31 |         await homePage.clickProductsLink();
-  32 |         await expect(productsPage.isAllProductsVisible()).resolves.toBe(true);
+  29 |         if (!testData || typeof testData.productToViewIndex !== 'number' ||
+  30 |             !testData.expectedProductName || typeof testData.quantityToSet !== 'number') {
+  31 |             throw new Error("Test data for verifying product quantity is incomplete or invalid.");
+  32 |         }
   33 |
-  34 |         // Click on 'View Product' of the product specified by index
-  35 |         await productsPage.clickViewProduct(testData.productToViewIndex);
-  36 |
-  37 |         // Verify correct product detail page is loaded (optional, but good for robustness)
-  38 |         // For example, by checking the product name on the detail page
-  39 |         const productNameOnDetail = await productsPage.getProductName();
-  40 |         expect(productNameOnDetail.trim().toLowerCase()).toBe(testData.expectedProductName.toLowerCase());
+  34 |         await productsPage.clickViewProduct(testData.productToViewIndex);
+  35 |
+  36 |         const productNameOnDetail = await productsPage.getProductNameOnDetail(); // Using renamed method
+  37 |         expect(productNameOnDetail?.trim().toLowerCase()).toBe(testData.expectedProductName.toLowerCase());
+  38 |
+  39 |         await productsPage.setQuantity(testData.quantityToSet);
+  40 |         await productsPage.clickAddToCartOnDetailPage();
   41 |
-  42 |         // 4. Increase quantity to specified value (e.g., 4)
-  43 |         await productsPage.setQuantity(testData.quantityToSet);
-  44 |
-  45 |         // 5. Click 'Add to cart' button
-  46 |         await productsPage.clickAddToCartOnDetailPage(); // Use the specific method for detail page
-  47 |
-  48 |         // 6. Click 'View Cart' button (handle modal)
-  49 |         // The modal appears after adding to cart from product detail page
-  50 |         await page.locator(productsPage.viewCartLinkInModal).click();
+  42 |         await productsPage.viewCartLinkInModal.click(); // productsPage has this locator
+  43 |
+  44 |         await expect(page).toHaveURL(/.*view_cart/);
+  45 |         await expect(cartPage.isShoppingCartVisible()).resolves.toBe(true);
+  46 |
+  47 |         // In CartPage, productInCartName(productName) returns a Locator for the link.
+  48 |         // We need to find the row for that product to get its quantity.
+  49 |         const productLinkInCart = cartPage.productInCartName(testData.expectedProductName);
+  50 |         await expect(productLinkInCart).toBeVisible();
   51 |
-  52 |         // 7. Verify that product is displayed in cart page with exact quantity
-  53 |         await expect(page).toHaveURL(/.*view_cart/);
-> 54 |         expect(await cartPage.isShoppingCartVisible()).toBe(true);
-     |                                                        ^ Error: expect(received).toBe(expected) // Object.is equality
+  52 |         // Define productRowLocator using a single, more complete XPath based on the product link
+  53 |         const productRowLocator: Locator = page.locator(`//td[@class='cart_description']//a[text()='${testData.expectedProductName}']/ancestor::tr[1]`);
+  54 |         await expect(productRowLocator).toBeVisible(); // Ensure the row itself is found
   55 |
-  56 |         // Locate the product row in the cart by its name
-  57 |         const productRow = page.locator(`//tr[contains(@id, 'product-')]//td[@class='cart_description']//a[text()='${testData.expectedProductName}']/ancestor::tr`);
-  58 |         await expect(productRow).toBeVisible();
+  56 |         // Chain with relative XPath to find the cart quantity element
+  57 |         const cartQuantityElement: Locator = productRowLocator.locator("./td[@class='cart_quantity']/button[@class='disabled']");
+> 58 |         const actualQuantityInCartText = await cartQuantityElement.textContent();
+     |                                                                    ^ Error: locator.textContent: Unsupported token "@class" while parsing css selector "./td[@class='cart_quantity']/button[@class='disabled']". Did you mean to CSS.escape it?
   59 |
-  60 |         // Get the quantity from the cart
-  61 |         // The website uses <button class="disabled">${quantity}</button> for quantity display.
-  62 |         const cartQuantityElement = productRow.locator('.cart_quantity button.disabled');
-  63 |         const actualQuantityInCart = await cartQuantityElement.textContent();
+  60 |         expect(actualQuantityInCartText).not.toBeNull(); // Add a null check before parseInt
+  61 |         expect(parseInt(actualQuantityInCartText!)).toBe(testData.quantityToSet); // Use non-null assertion
+  62 |     });
+  63 | });
   64 |
-  65 |         expect(parseInt(actualQuantityInCart)).toBe(testData.quantityToSet);
-  66 |     });
-  67 | });
-  68 |
 ```

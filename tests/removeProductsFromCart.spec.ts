@@ -3,7 +3,7 @@ import { HomePage } from '../pages/HomePage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { CartPage } from '../pages/CartPage';
 import { Utils } from '../utils/utils';
-import type { ProductsFile, Product as ProductType } from '../../types/testData';
+import type { ProductsFile, Product as ProductType } from 'types/testData';
 
 const productsTestData = Utils.loadTestData('products.json') as ProductsFile;
 const productsToManageInCart: ProductType[] = productsTestData.addProductsToCart.products;

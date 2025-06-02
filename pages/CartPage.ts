@@ -12,19 +12,21 @@ export class CartPage {
     readonly cartSubscriptionEmailInput: Locator;
     readonly cartSubscriptionButton: Locator;
     readonly cartSuccessAlert: Locator;
+    readonly productNameLinksInCart: Locator; // Added for getCartProductNames
 
     constructor(page: Page) {
         this.page = page;
-        this.shoppingCartText = page.locator('#cart_info:has-text("Shopping Cart")');
-        this.cartTable = page.locator('#cart_info_table');
-        this.cartItems = page.locator('#cart_info_table tbody tr');
+        this.shoppingCartText = page.locator('#cart_info:has-text("Shopping Cart")'); // Potentially for header text
+        this.cartTable = page.locator('#cart_info_table'); // For the main cart table visibility
+        this.cartItems = page.locator('#cart_info_table tbody tr'); // For individual cart item rows
         this.proceedToCheckoutButton = page.locator('.col-sm-6 .btn.check_out');
         this.registerLoginLink = page.locator('.modal-body p a[href="/login"]');
-        this.emptyCartText = page.locator('#empty_cart p');
-        this.cartSubscriptionText = page.locator('h2:has-text("Subscription")'); // Assuming this is unique enough for cart page footer
-        this.cartSubscriptionEmailInput = page.locator('#subscribe_email'); // Assuming this ID is unique in footer
-        this.cartSubscriptionButton = page.locator('#subscribe'); // Assuming this ID is unique in footer
-        this.cartSuccessAlert = page.locator('#success-subscribe'); // Assuming this ID is unique in footer
+        this.emptyCartText = page.locator('#empty_cart p'); // For "Cart is empty!" message
+        this.cartSubscriptionText = page.locator('h2:has-text("Subscription")');
+        this.cartSubscriptionEmailInput = page.locator('#subscribe_email');
+        this.cartSubscriptionButton = page.locator('#subscribe');
+        this.cartSuccessAlert = page.locator('#success-subscribe');
+        this.productNameLinksInCart = page.locator('#cart_info_table tbody tr td.cart_description a'); // Specific locator for product names
     }
 
     productInCartName(productName: string): Locator {
@@ -40,7 +42,8 @@ export class CartPage {
     }
 
     async isShoppingCartVisible(): Promise<boolean> {
-        return await this.shoppingCartText.isVisible();
+        // Check for the cart table itself as a better indicator of a populated/interactive cart view
+        return await this.cartTable.isVisible();
     }
 
     async enterCartSubscriptionEmail(email: string): Promise<void> {
@@ -57,6 +60,19 @@ export class CartPage {
 
     async isCartSubscriptionTextVisible(): Promise<boolean> {
         return await this.cartSubscriptionText.isVisible();
+    }
+
+    // New method to encapsulate subscription interaction with a wait
+    async subscribeWithEmail(email: string): Promise<void> {
+        const footerLocator = this.page.locator('footer'); // Assuming footer contains the subscription form
+        await footerLocator.waitFor({ state: 'visible', timeout: 7000 });
+
+        await this.cartSubscriptionText.scrollIntoViewIfNeeded(); 
+        await this.cartSubscriptionText.waitFor({ state: 'visible', timeout: 7000 }); 
+        await this.cartSubscriptionEmailInput.waitFor({ state: 'visible', timeout: 7000 }); 
+        await this.cartSubscriptionEmailInput.waitFor({ state: 'enabled', timeout: 3000 }); 
+        await this.cartSubscriptionEmailInput.fill(email);
+        await this.cartSubscriptionButton.click();
     }
 
     async getCartItemCount(): Promise<number> {
@@ -94,35 +110,27 @@ export class CartPage {
     }
 
     async getCartProductNames(): Promise<string[]> {
-        try {
-            // Adding a specific wait for the cart items to be potentially populated
-            await this.page.waitForSelector('#cart_info_table tbody tr td.cart_description a', { timeout: 5000 });
-        } catch (e) {
-            // If items don't appear, and cart is meant to be empty, this is fine.
-            // Check if the empty cart message is visible.
+        // Ensure the cart table is visible before trying to get names.
+        // isShoppingCartVisible() now checks this.cartTable.
+        if (!(await this.isShoppingCartVisible())) {
             if (await this.isEmptyCartVisible()) {
-                return []; // Return empty array if cart is explicitly empty
+                return []; // Cart is explicitly empty
             }
-            // Otherwise, re-throw or handle as an unexpected state.
-            // For now, let it proceed, and count will be 0.
+            // If cart table isn't visible and cart isn't flagged as empty, it's an unexpected state.
+            console.warn("[CartPage.getCartProductNames] Cart table not visible. Returning empty list of names.");
+            return [];
         }
 
-        const productLinkLocators = this.page.locator(`${this.cartItems.first().locator(':scope').toString()} .cart_description a`);
-        const count = await productLinkLocators.count();
-        const names: string[] = [];
+        // Use the dedicated locator for product name links
+        const nameLocators = this.productNameLinksInCart;
+        const count = await nameLocators.count();
 
         if (count === 0) {
-            if (await this.isEmptyCartVisible()) {
-                return names;
-            }
+            // This means the cart table is visible, but no product name links were found.
+            // This could be a valid empty cart state if isEmptyCartVisible() wasn't checked or if DOM is unusual.
+            return [];
         }
 
-        for (let i = 0; i < count; i++) {
-            const name = await productLinkLocators.nth(i).textContent();
-            if (name) {
-                names.push(name);
-            }
-        }
-        return names;
+        return await nameLocators.allTextContents();
     }
 }

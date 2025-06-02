@@ -3,7 +3,7 @@ import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { SignupPage, type SignupUserDetails } from '../pages/SignupPage'; // Import combined interface
 import { Utils } from '../utils/utils';
-import type { UsersFile, UserData } from '../../types/testData';
+import type { UsersFile, UserData } from 'types/testData';
 
 const usersTestData = Utils.loadTestData('users.json') as UsersFile;
 const loadedUserData: UserData = usersTestData.registerUser;

@@ -23,8 +23,8 @@ test.describe('Test Case 7: Verify Test Cases Page', () => {
         await expect(testCasesPage.isTestCasesTextVisible()).resolves.toBe(true);
 
         // Optional: Verify the count of test cases listed
-        // The current getTestCasesCount counts all <tr>, including header.
-        // If the table has a header row and 26 data rows, count should be 27.
-        expect(await testCasesPage.getTestCasesCount()).toBe(27);
+        // The getTestCasesCount method now counts <h4> elements starting with "Test Case".
+        // Based on page structure, there are 26 such test cases.
+        expect(await testCasesPage.getTestCasesCount()).toBe(26);
     });
 });

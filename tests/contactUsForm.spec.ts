@@ -4,7 +4,7 @@ import * as path from 'path';
 import { HomePage } from '../pages/HomePage';
 import { ContactUsPage } from '../pages/ContactUsPage';
 import { Utils } from '../utils/utils';
-import type { FormDataFile, ContactUsData } from '../../types/testData';
+import type { FormDataFile, ContactUsData } from 'types/testData';
 
 // Load test data and cast to defined types
 const formData = Utils.loadTestData('formData.json') as FormDataFile;

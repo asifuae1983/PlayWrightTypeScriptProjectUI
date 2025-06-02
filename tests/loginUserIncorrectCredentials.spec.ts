@@ -2,7 +2,7 @@ import { test, expect, type Page } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { Utils } from '../utils/utils';
-import type { UsersFile, UserData } from '../../types/testData';
+import type { UsersFile, UserData } from 'types/testData';
 
 // Load test data
 const usersTestData = Utils.loadTestData('users.json') as UsersFile;

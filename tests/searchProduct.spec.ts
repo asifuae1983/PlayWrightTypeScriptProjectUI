@@ -2,7 +2,7 @@ import { test, expect, type Page, type Locator } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { Utils } from '../utils/utils';
-import type { ProductsFile } from '../../types/testData';
+import type { ProductsFile } from 'types/testData';
 
 const productsTestData = Utils.loadTestData('products.json') as ProductsFile;
 const searchData = productsTestData.searchProduct;
@@ -42,11 +42,12 @@ test.describe('Test Case 9: Search Product', () => {
                 foundExpectedProduct = true;
             }
             // Verify all displayed products are related to the search term
-            expect(name.toLowerCase()).toContain(searchData.searchTerm.toLowerCase());
+            expect(name.toLowerCase().includes(searchData.searchTerm.toLowerCase())).toBe(true);
         }
 
-        expect(foundExpectedProduct).toBe(true,
-            `Expected product "${searchData.expectedProductName}" not found in search results for "${searchData.searchTerm}". Found: ${displayedProductNames.join(', ')}`
-        );
+        if (!foundExpectedProduct) {
+            throw new Error(`Expected product "${searchData.expectedProductName}" not found in search results for "${searchData.searchTerm}". Found: ${displayedProductNames.join(', ')}`);
+        }
+        expect(foundExpectedProduct).toBe(true); // Basic assertion after custom error check
     });
 });

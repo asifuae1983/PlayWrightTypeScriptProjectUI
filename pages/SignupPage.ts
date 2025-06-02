@@ -2,7 +2,7 @@ import { type Page, type Locator } from '@playwright/test';
 
 // Interface for account information, matching typical userData structure
 export interface AccountInformation {
-    title: 'Mr' | 'Mrs'; // Or string if more titles are possible
+    title: 'Mr' | 'Mrs' | 'Ms'; // Or string if more titles are possible
     password?: string; // Optional if not always set here
     name?: string; // Name used for signup, distinct from address firstName/lastName
     email?: string; // Optional if already handled by LoginPage
@@ -94,18 +94,33 @@ export class SignupPage {
             await this.titleMrRadio.check();
         } else if (data.title === 'Mrs') {
             await this.titleMrsRadio.check();
-        }
+        } // Note: No radio button for 'Ms' on the page, this might need UI adjustment or test data restriction.
         if(data.password) await this.passwordInput.fill(data.password);
 
         await this.daysDropdown.waitFor({ state: 'visible', timeout: 5000 });
-        await this.daysDropdown.selectOption(data.dayOfBirth);
+        await this.daysDropdown.locator('option').first().waitFor({ state: 'attached', timeout: 7000 }); // Wait for at least one option
+        const dayOptionsCount = await this.daysDropdown.locator('option').count();
+        if (dayOptionsCount < 32) { // Expected 31 days + 1 placeholder
+            console.warn(`[SignupPage] Days dropdown has only ${dayOptionsCount} options, expected 32. Selection might fail or be incorrect.`);
+        }
+        const dayToSelect = parseInt(data.dayOfBirth, 10).toString(); // Normalize "05" to "5"
+        await this.daysDropdown.selectOption(dayToSelect);
 
         await this.monthsDropdown.waitFor({ state: 'visible', timeout: 5000 });
-        // Assuming monthOfBirth is the textual name e.g. "January" or numeric string e.g. "1"
-        // Playwright's selectOption can usually handle both value and label.
+        await this.monthsDropdown.locator('option').first().waitFor({ state: 'attached', timeout: 7000 }); // Wait for at least one option
+        const monthOptionsCount = await this.monthsDropdown.locator('option').count();
+        if (monthOptionsCount < 13) { // Expected 12 months + 1 placeholder
+            console.warn(`[SignupPage] Months dropdown has only ${monthOptionsCount} options, expected 13. Selection might fail or be incorrect.`);
+        }
         await this.monthsDropdown.selectOption(data.monthOfBirth);
 
         await this.yearsDropdown.waitFor({ state: 'visible', timeout: 5000 });
+        await this.yearsDropdown.locator('option').first().waitFor({ state: 'attached', timeout: 7000 }); // Wait for at least one option
+        const yearOptionsCount = await this.yearsDropdown.locator('option').count();
+        if (yearOptionsCount < 10) { // Arbitrary threshold, e.g. expecting at least 10 years listed
+            console.warn(`[SignupPage] Years dropdown has only ${yearOptionsCount} options. Expected more. Selection might fail or be incorrect.`);
+            // Consider throwing an error if a minimum viable count isn't met, e.g. if (yearOptionsCount === 1 && (await this.yearsDropdown.locator('option').first().textContent()) === 'Year')
+        }
         await this.yearsDropdown.selectOption(data.yearOfBirth);
 
         if (data.newsletter) {
@@ -139,7 +154,7 @@ export class SignupPage {
     }
 
     // Original methods from JS, now typed
-    async fillAccountInformation(title: 'Mr' | 'Mrs', password: string, day: string, month: string, year: string, newsletter: boolean, optin: boolean): Promise<void> {
+    async fillAccountInformation(title: 'Mr' | 'Mrs' | 'Ms', password: string, day: string, month: string, year: string, newsletter: boolean, optin: boolean): Promise<void> {
         await this.fillAccountInformationPart({ title, password, dayOfBirth: day, monthOfBirth: month, yearOfBirth: year, newsletter, optin });
     }
 

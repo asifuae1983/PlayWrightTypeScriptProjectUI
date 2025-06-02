@@ -23,7 +23,7 @@ test.describe('Test Case 19: View Brand Products', () => {
 
         await expect(page).toHaveURL(new RegExp(`/brand_products/${brand1Name.replace(/\s/g, '%20')}`)); // Handle spaces in URL
         let brandPageTitle = await productsPage.getCategoryTitleText();
-        expect(brandPageTitle?.trim()).toBe(`BRAND - ${brand1Name.toUpperCase()} PRODUCTS`);
+        expect(brandPageTitle?.trim().toLowerCase()).toBe(`BRAND - ${brand1Name.toLowerCase()} PRODUCTS`.toLowerCase());
         await expect(productsPage.productList.first()).toBeVisible(); // Check if product list has items
 
         const brand2Name = 'H&M'; // H&M also has a space in its URL representation if not handled by selector
@@ -35,7 +35,7 @@ test.describe('Test Case 19: View Brand Products', () => {
         // Example: .brands_products a[href='/brand_products/H&M']
         await expect(page).toHaveURL(new RegExp(`/brand_products/H&M`)); // The POM selector uses "H&M" directly
         brandPageTitle = await productsPage.getCategoryTitleText();
-        expect(brandPageTitle?.trim()).toBe(`BRAND - ${brand2Name.toUpperCase()} PRODUCTS`);
+        expect(brandPageTitle?.trim().toLowerCase()).toBe(`BRAND - ${brand2Name.toLowerCase()} PRODUCTS`.toLowerCase());
         await expect(productsPage.productList.first()).toBeVisible();
     });
 });

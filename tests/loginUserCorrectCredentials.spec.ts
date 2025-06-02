@@ -1,9 +1,9 @@
 import { test, expect, type Page, type Browser } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
-import { SignupPage, type UserData as SignupPageUserData, type AccountInformation, type AddressInformation } from '../pages/SignupPage';
+import { SignupPage, type AccountInformation, type AddressInformation } from '../pages/SignupPage'; // Removed UserData as SignupPageUserData
 import { Utils } from '../utils/utils';
-import type { UsersFile, UserData } from '../../types/testData';
+import type { UsersFile, UserData } from 'types/testData';
 
 // Load test data
 const usersTestData = Utils.loadTestData('users.json') as UsersFile;

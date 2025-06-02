@@ -61,12 +61,23 @@ export class HomePage {
         this.fullFledgedText = page.locator('//div[@class="item active"]//h2[contains(text(),"Full-Fledged practice website")]');
     }
 
-    recommendedItemNameSelector(index: number): string { // Renamed to avoid conflict if a direct locator property was intended
-        return `${this.recommendedItemsSection.first().locator(':scope').toString()} .item:nth-child(${index + 1}) p`;
+    // Get all currently active recommended item cards
+    private getActiveRecommendedItemCards(): Locator {
+        // Assuming recommended items are within an active carousel slide, and each product is in a 'col-sm-4'
+        // This might need adjustment if the structure is different (e.g. no 'col-sm-4' or if '.item.active' is not the direct parent)
+        return this.recommendedItemsSection.locator('.item.active .single-products'); // .single-products is a common wrapper too.
     }
 
-    recommendedItemAddToCartButtonSelector(index: number): string { // Renamed for clarity
-        return `${this.recommendedItemsSection.first().locator(':scope').toString()} .item:nth-child(${index + 1}) .add-to-cart`;
+    // Returns a Locator for the name of a specific recommended item by its display index
+    getRecommendedItemNameLocator(index: number): Locator {
+        // Assuming the name is the first direct child <p> of .productinfo
+        return this.getActiveRecommendedItemCards().nth(index).locator('.productinfo > p').first();
+    }
+
+    // Returns a Locator for the add-to-cart button of a specific recommended item
+    getRecommendedItemAddToCartButtonLocator(index: number): Locator {
+        // Targeting the add-to-cart button within productinfo (not the overlay one for recommended items usually)
+        return this.getActiveRecommendedItemCards().nth(index).locator('.productinfo a.add-to-cart');
     }
 
     loggedInAsTextSelector(username: string): string { // Renamed for clarity
@@ -109,6 +120,19 @@ export class HomePage {
         return await this.successAlert.textContent();
     }
 
+    async subscribeToNewsletter(email: string): Promise<void> {
+        const footerLocator = this.page.locator('footer'); // Assuming footer contains the subscription form
+        await footerLocator.waitFor({ state: 'visible', timeout: 7000 });
+
+        await this.subscriptionText.scrollIntoViewIfNeeded(); 
+        await this.subscriptionText.waitFor({ state: 'visible', timeout: 7000 }); 
+
+        await this.subscriptionEmailInput.waitFor({ state: 'visible', timeout: 7000 }); 
+        await this.subscriptionEmailInput.waitFor({ state: 'enabled', timeout: 3000 }); 
+        await this.subscriptionEmailInput.fill(email);
+        await this.subscriptionButton.click();
+    }
+
     async isSliderVisible(): Promise<boolean> {
         return await this.slider.isVisible();
     }
@@ -144,12 +168,12 @@ export class HomePage {
     }
 
     async getRecommendedItemName(index: number): Promise<string | null> {
-        return await this.page.locator(this.recommendedItemNameSelector(index)).textContent();
+        return await this.getRecommendedItemNameLocator(index).textContent();
     }
 
     async addRecommendedItemToCart(index: number): Promise<string | null> {
         const itemName = await this.getRecommendedItemName(index);
-        await this.page.locator(this.recommendedItemAddToCartButtonSelector(index)).click();
+        await this.getRecommendedItemAddToCartButtonLocator(index).click();
         await this.addedModal.waitFor({ state: 'visible', timeout: 5000 });
         return itemName;
     }

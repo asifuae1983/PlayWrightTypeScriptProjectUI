@@ -10,7 +10,7 @@ import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { PaymentPage } from '../pages/PaymentPage';
 import { faker } from '@faker-js/faker';
-import type { PaymentDetails } from '../../types/testData'; // Import specific type
+import type { PaymentDetails } from 'types/testData'; // Import specific type
 
 // const downloadsDir = path.join(__dirname, '..', 'downloads');
 // if (!fs.existsSync(downloadsDir)) {
@@ -113,10 +113,11 @@ test.describe('Test Case 24: Download Invoice After Purchase Order', () => {
         const successText = await paymentPage.getOrderSuccessMessage();
         expect(successText).toContain('Your order has been placed successfully!');
 
-        const [download]: [Download] = await Promise.all([
+        const results = await Promise.all([
             page.waitForEvent('download', {timeout: 10000}),
             paymentPage.clickDownloadInvoice()
         ]);
+        const download: Download = results[0];
 
         expect(download.suggestedFilename()).toBe('invoice.txt');
         // const filePath = path.join(downloadsDir, download.suggestedFilename());

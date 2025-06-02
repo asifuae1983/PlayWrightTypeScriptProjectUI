@@ -10,14 +10,17 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
+    "baseUrl": ".", // Added baseUrl
+    "paths": {      // Added paths mapping
+      "types/*": ["types/*"]
+    },
     "noEmit": true,
     "lib": ["esnext", "dom"],
     "types": ["node", "@playwright/test"]
   },
   "include": [
     "**/*.ts",
-    "**/*.d.ts",
-    "playwright.config.js" // Make sure this file exists or remove if not needed in include
+    "**/*.d.ts"
   ],
   "exclude": [
     "node_modules",

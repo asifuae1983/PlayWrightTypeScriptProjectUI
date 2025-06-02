@@ -7,7 +7,7 @@ import { SignupPage, type SignupUserDetails } from '../pages/SignupPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { PaymentPage } from '../pages/PaymentPage';
 import { Utils } from '../utils/utils';
-import type { UsersFile, UserData, ProductsFile, Product as ProductType, FormDataFile, PaymentDetails } from '../../types/testData';
+import type { UsersFile, UserData, ProductsFile, Product as ProductType, FormDataFile, PaymentDetails } from 'types/testData';
 
 const users = Utils.loadTestData('users.json') as UsersFile;
 const productsData = Utils.loadTestData('products.json') as ProductsFile;

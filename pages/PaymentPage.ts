@@ -46,8 +46,16 @@ export class PaymentPage {
         await this.payAndConfirmOrderButton.click();
     }
 
-    async getOrderSuccessMessage(): Promise<string | null> {
-        return await this.orderSuccessMessage.textContent();
+    async getOrderSuccessMessage(timeout: number = 10000): Promise<string | null> {
+        try {
+            const successMessageContainer = this.page.locator('#success_message');
+            await successMessageContainer.waitFor({ state: 'visible', timeout }); // Wait for parent container
+            await this.orderSuccessMessage.waitFor({ state: 'visible', timeout }); // Then wait for message itself
+            return await this.orderSuccessMessage.textContent();
+        } catch (error) {
+            console.log(`Order success message not visible within ${timeout}ms. Error: ${error}`);
+            return null; 
+        }
     }
 
     async isOrderPlacedVisible(): Promise<boolean> {

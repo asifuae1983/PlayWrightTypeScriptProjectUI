@@ -2,13 +2,14 @@ import { type Page, type Locator } from '@playwright/test';
 
 export class TestCasesPage {
     readonly page: Page;
-    readonly testCasesText: Locator;
-    readonly testCaseRows: Locator;
+    readonly testCasesText: Locator; // Main "Test Cases" header text
+    readonly testCaseEntries: Locator; // Locator for the individual test case entries
 
     constructor(page: Page) {
         this.page = page;
         this.testCasesText = page.locator('h2 b:has-text("Test Cases")');
-        this.testCaseRows = page.locator('.table.table-striped tr'); // Assuming this is the table of test cases
+        // Updated locator to target the <h4> elements representing each test case
+        this.testCaseEntries = page.locator("//h4[starts-with(normalize-space(.), 'Test Case')]");
     }
 
     async isTestCasesTextVisible(): Promise<boolean> { // Renamed from isTestCasesPageVisible for clarity
@@ -17,9 +18,15 @@ export class TestCasesPage {
     }
 
     async getTestCasesCount(): Promise<number> {
-        // This counts all <tr> elements. If the table has a <thead>, this might be accurate for data rows
-        // or might need adjustment if header rows are also <tr> within the same parent.
-        // For now, assume it counts data rows or is used with knowledge of table structure.
-        return await this.testCaseRows.count();
+        // Wait for the first test case entry to be visible to ensure the list has loaded
+        // before attempting to count all of them.
+        try {
+            await this.testCaseEntries.first().waitFor({ state: 'visible', timeout: 7000 });
+        } catch (error) {
+            // If no test case entries are found (e.g., page structure changed drastically), return 0
+            console.warn("No test case entries found or visible within the timeout.");
+            return 0;
+        }
+        return await this.testCaseEntries.count();
     }
 }

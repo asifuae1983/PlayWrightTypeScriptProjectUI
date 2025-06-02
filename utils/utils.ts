@@ -2,7 +2,7 @@
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Page } from '@playwright/test'; // Import Page type
+import { type Page, type Locator } from '@playwright/test'; // Import Page and Locator type
 
 export class Utils {
     page: Page; // Class property type
@@ -61,9 +61,8 @@ export class Utils {
         await this.page.screenshot({ path: path.join(screenshotsDir, `${filename}.png`) });
     }
 
-    async scrollToElement(selector: string): Promise<void> {
-        const element = await this.page.locator(selector);
-        await element.scrollIntoViewIfNeeded();
+    async scrollToElement(elementLocator: Locator): Promise<void> { // Changed signature to accept Locator
+        await elementLocator.scrollIntoViewIfNeeded();
     }
 
     async isTextVisible(text: string, options: { timeout?: number } = {}): Promise<boolean> {
@@ -72,7 +71,11 @@ export class Utils {
             await this.page.waitForFunction(
                 (textToFind) => {
                     const elements = Array.from(document.querySelectorAll('*'));
-                    return elements.some(el => el.textContent && el.textContent.trim() === textToFind && el.offsetParent !== null);
+                    return elements.some(el => {
+                        // Ensure el is an HTMLElement to access offsetParent
+                        const htmlEl = el as HTMLElement;
+                        return htmlEl.textContent && htmlEl.textContent.trim() === textToFind && htmlEl.offsetParent !== null;
+                    });
                 },
                 text,
                 { timeout }

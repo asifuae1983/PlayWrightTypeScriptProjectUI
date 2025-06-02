@@ -1,1 +1,5 @@
 node_modules/
+allure-results/
+playwright-report/
+test-results/**/*.zip
+test-results/**/*.webm

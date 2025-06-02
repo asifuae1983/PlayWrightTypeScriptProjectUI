@@ -129,13 +129,31 @@ export class CheckoutPage {
         const fullNameStr = await this.page.locator(`${containerSelectorPrefix} li.address_firstname`).textContent();
         const { title, firstName, lastName } = this._parseFullName(fullNameStr);
 
-        let company = (await this.page.locator(`${containerSelectorPrefix} li.address_company`).first().textContent() || '').trim();
-        // Fallback for company if it's not using address_company class (based on original JS)
-        if (!company) {
+        let company = '';
+        const companyLocator = this.page.locator(`${containerSelectorPrefix} li.address_company`).first();
+        try {
+            // Wait for the primary company locator to be attached, with a shorter timeout.
+            await companyLocator.waitFor({ state: 'attached', timeout: 3000 });
+            const companyText = await companyLocator.textContent(); 
+            if (companyText) {
+                company = companyText.trim();
+            }
+        } catch (e) {
+            // Primary locator failed, proceed to fallback.
+            // console.log(`Primary company locator ${containerSelectorPrefix} li.address_company not found or failed: ${(e as Error).message}`);
+        }
+
+        if (!company) { // If company still not found, try fallback
             const companyPositionalLocator = this.page.locator(`${containerSelectorPrefix} ul > li:nth-child(3)`);
-            const address1Text = (await this.page.locator(`${containerSelectorPrefix} li.address_address1`).first().textContent() || '').trim();
-            if (await companyPositionalLocator.count() > 0 && (await companyPositionalLocator.textContent() || '').trim() !== address1Text) {
-                company = (await companyPositionalLocator.textContent() || '').trim();
+            if (await companyPositionalLocator.count() > 0) { // Check if this positional locator even exists
+                const positionalCompanyText = await companyPositionalLocator.textContent();
+                // Ensure address1 is fetched for comparison, only if positional company text exists
+                if (positionalCompanyText) {
+                    const address1Text = (await this.page.locator(`${containerSelectorPrefix} li.address_address1`).first().textContent() || '').trim();
+                    if (positionalCompanyText.trim() !== address1Text) {
+                        company = positionalCompanyText.trim();
+                    }
+                }
             }
         }
 

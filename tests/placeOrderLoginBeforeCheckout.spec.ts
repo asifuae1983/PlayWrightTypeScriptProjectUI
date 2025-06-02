@@ -1,13 +1,13 @@
 import { test, expect, type Page, type Browser } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
-import { SignupPage, type AccountInformation, type AddressInformation, type UserData as SignupPageUserData } from '../pages/SignupPage';
+import { SignupPage, type AccountInformation, type AddressInformation } from '../pages/SignupPage'; // Removed UserData as SignupPageUserData
 import { ProductsPage } from '../pages/ProductsPage';
 import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { PaymentPage } from '../pages/PaymentPage';
 import { Utils } from '../utils/utils';
-import type { UsersFile, UserData, ProductsFile, Product as ProductType, FormDataFile, PaymentDetails } from '../../types/testData';
+import type { UsersFile, UserData, ProductsFile, Product as ProductType, FormDataFile, PaymentDetails } from 'types/testData';
 
 const users = Utils.loadTestData('users.json') as UsersFile;
 const productsData = Utils.loadTestData('products.json') as ProductsFile;

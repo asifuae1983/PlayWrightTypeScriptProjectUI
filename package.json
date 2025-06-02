@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/asifqa123/Selenium_TestNG#readme",
   "devDependencies": {
-    "@faker-js/faker": "^8.4.1", // Using a recent version, you can update if needed
+    "@faker-js/faker": "^8.4.1",
     "@types/node": "^22.15.29",
     "allure-playwright": "^3.2.2",
     "playwright": "^1.52.0",

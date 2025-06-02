@@ -24,9 +24,8 @@ test.describe('Test Case 22: Add Recommended Items to Cart', () => {
         const recommendedItemIndex = 0;
 
         // Ensure there's at least one recommended item before trying to interact
-        // The recommendedItemAddToCartButtonSelector method returns a string selector
-        const addToCartButtonSelector = homePage.recommendedItemAddToCartButtonSelector(recommendedItemIndex);
-        const recommendedItemsCount = await page.locator(addToCartButtonSelector).count();
+        const addToCartButtonLocator = homePage.getRecommendedItemAddToCartButtonLocator(recommendedItemIndex);
+        const recommendedItemsCount = await addToCartButtonLocator.count();
 
         if (recommendedItemsCount === 0) {
             console.log("Skipping test: No recommended items found to add to cart.");

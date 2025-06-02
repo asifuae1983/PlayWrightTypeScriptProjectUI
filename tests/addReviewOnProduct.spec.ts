@@ -2,7 +2,7 @@ import { test, expect, type Page } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { faker } from '@faker-js/faker';
-import type { FormDataFile, ReviewData } from '../../types/testData'; // For potential future use with JSON data
+import type { FormDataFile, ReviewData } from 'types/testData'; // For potential future use with JSON data
 import { Utils } from '../utils/utils'; // For potential future use with JSON data
 
 
@@ -49,8 +49,8 @@ test.describe('Test Case 21: Add Review on Product', () => {
         await productsPage.fillReview(name, email, reviewMessage);
 
         // 8. Verify success message 'Thank you for your review.' is visible
-        await productsPage.reviewSuccessMessage.waitFor({ state: 'visible', timeout: 5000 });
-        const successMessageText = await productsPage.getReviewSuccessMessage();
+        // The getReviewSuccessMessage method in ProductsPage now includes the waitFor logic.
+        const successMessageText = await productsPage.getReviewSuccessMessage(5000); // Pass timeout if needed, else default (7000ms) will be used
         expect(successMessageText?.trim()).toBe('Thank you for your review.');
     });
 });

@@ -3,7 +3,7 @@ import { HomePage } from '../pages/HomePage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { CartPage } from '../pages/CartPage';
 import { Utils } from '../utils/utils';
-import type { ProductsFile } from '../../types/testData';
+import type { ProductsFile } from 'types/testData';
 
 const productsTestData = Utils.loadTestData('products.json') as ProductsFile;
 const testData = productsTestData.verifyProductQuantity;
@@ -49,12 +49,15 @@ test.describe('Test Case 13: Verify Product quantity in Cart', () => {
         const productLinkInCart = cartPage.productInCartName(testData.expectedProductName);
         await expect(productLinkInCart).toBeVisible();
 
-        // Assuming the product name link is inside a <td>, and that <td> is inside the <tr> for the product.
-        const productRowLocator: Locator = productLinkInCart.locator('ancestor::tr');
+        // Define productRowLocator using a single, more complete XPath based on the product link
+        const productRowLocator: Locator = page.locator(`//td[@class='cart_description']//a[text()='${testData.expectedProductName}']/ancestor::tr[1]`);
+        await expect(productRowLocator).toBeVisible(); // Ensure the row itself is found
 
-        const cartQuantityElement: Locator = productRowLocator.locator('.cart_quantity .disabled'); // In cart, quantity is in a button with class 'disabled'
-        const actualQuantityInCartText = await cartQuantityElement.inputValue(); // Or .textContent() if it's not an input/button with value
+        // Construct a full XPath for the quantity element to avoid chaining issues
+        const cartQuantityElement: Locator = page.locator(`//td[@class='cart_description']//a[text()='${testData.expectedProductName}']/ancestor::tr[1]//td[@class='cart_quantity']/button[@class='disabled']`);
+        const actualQuantityInCartText = await cartQuantityElement.textContent();
 
-        expect(parseInt(actualQuantityInCartText)).toBe(testData.quantityToSet);
+        expect(actualQuantityInCartText).not.toBeNull(); // Add a null check before parseInt
+        expect(parseInt(actualQuantityInCartText!)).toBe(testData.quantityToSet); // Use non-null assertion
     });
 });

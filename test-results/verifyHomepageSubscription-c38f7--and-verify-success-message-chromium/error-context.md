@@ -1,17 +1,17 @@
 # Test info
 
 - Name: Test Case 10: Verify Subscription in home page >> should subscribe with an email and verify success message
-- Location: /app/tests/verifyHomepageSubscription.spec.js:20:5
+- Location: /app/tests/verifyHomepageSubscription.spec.ts:19:9
 
 # Error details
 
 ```
-TimeoutError: locator.scrollIntoViewIfNeeded: Timeout 10000ms exceeded.
+TimeoutError: locator.waitFor: Timeout 7000ms exceeded.
 Call log:
-  - waiting for locator('#subscribe_email')
+  - waiting for locator('#subscribe_email') to be visible
 
-    at Utils.scrollToElement (/app/utils/utils.js:62:23)
-    at /app/tests/verifyHomepageSubscription.spec.js:29:9
+    at HomePage.subscribeToNewsletter (/app/pages/HomePage.ts:128:43)
+    at /app/tests/verifyHomepageSubscription.spec.ts:29:9
 ```
 
 # Page snapshot
@@ -50,16 +50,6 @@ Call log:
   - listitem
   - listitem
   - listitem
-- heading "AutomationExercise" [level=1]
-- heading "Full-Fledged practice website for Automation Engineers" [level=2]
-- paragraph: All QA engineers can use this website for automation practice and API testing either they are at beginner or advance level. This is for everybody to help them brush up their automation skills.
-- link "Test Cases":
-  - /url: /test_cases
-  - button "Test Cases"
-- link "APIs list for practice":
-  - /url: /api_list
-  - button "APIs list for practice"
-- img "demo website for practice"
 - heading "AutomationExercise" [level=1]
 - heading "Full-Fledged practice website for Automation Engineers" [level=2]
 - paragraph: All QA engineers can use this website for automation practice and API testing either they are at beginner or advance level. This is for everybody to help them brush up their automation skills.
@@ -500,130 +490,224 @@ Call log:
 - heading "Rs. 1000" [level=2]
 - paragraph: Rs. 1000
 - text:  Add to cart
-- img "ecommerce website products"
-- heading "Rs. 1500" [level=2]
-- paragraph: Stylish Dress
-- text:  Add to cart
-- img "ecommerce website products"
-- heading "Rs. 600" [level=2]
-- paragraph: Winter Top
-- text:  Add to cart
-- img "ecommerce website products"
-- heading "Rs. 400" [level=2]
-- paragraph: Summer White Top
-- text:  Add to cart
 - link "":
   - /url: "#recommended-item-carousel"
 - link "":
   - /url: "#recommended-item-carousel"
-- insertion
+- insertion:
+  - iframe
 - contentinfo:
   - heading "Subscription" [level=2]
   - textbox "Your email address"
   - button ""
   - paragraph: Get the most recent updates from our site and be updated your self...
   - paragraph: Copyright © 2021 All rights reserved
+- link "":
+  - /url: "#top"
 ```
 
 # Test source
 
 ```ts
-   1 | // utils/utils.js
-   2 | const crypto = require('crypto');
-   3 | const fs = require('fs'); // Import fs module
-   4 | const path = require('path'); // Import path module
-   5 |
-   6 | class Utils {
-   7 |     constructor(page) {
-   8 |         this.page = page;
-   9 |     }
-  10 |
-  11 |     /**
-  12 |      * Loads test data from a JSON file.
-  13 |      * @param {string} fileName - The name of the JSON file in the 'test-data' directory (e.g., 'users.json').
-  14 |      * @returns {object} The parsed JSON data.
-  15 |      */
-  16 |     static loadTestData(fileName) {
-  17 |         const filePath = path.join(__dirname, '..', 'test-data', fileName); // Assumes test-data is at project root
-  18 |         if (!fs.existsSync(filePath)) {
-  19 |             throw new Error(`Test data file not found: ${filePath}`);
-  20 |         }
-  21 |         const fileContent = fs.readFileSync(filePath, 'utf8');
-  22 |         return JSON.parse(fileContent);
-  23 |     }
-  24 |
-  25 |     static generateRandomEmail(prefix = 'testuser') {
-  26 |         const randomString = crypto.randomBytes(4).toString('hex');
-  27 |         return `${prefix}_${randomString}@example.com`;
-  28 |     }
-  29 |
-  30 |     static generateRandomName(prefix = 'User') {
-  31 |         const randomString = crypto.randomBytes(4).toString('hex');
-  32 |         return `${prefix}${randomString}`;
-  33 |     }
-  34 |
-  35 |     static generateRandomString(length = 10) {
-  36 |         return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0, length);
-  37 |     }
-  38 |
-  39 |     async navigateTo(url) {
-  40 |         await this.page.goto(url);
-  41 |     }
-  42 |
-  43 |     // commonLogin is less common if tests handle their own data, but can be kept if useful
-  44 |     async commonLogin(loginPage, email, password) {
-  45 |         // Note: This method might become less relevant if login data is always sourced from JSON in tests.
-  46 |         // Or, it could be adapted to take a user data object.
-  47 |         await loginPage.loginEmailInput.fill(email);
-  48 |         await loginPage.loginPasswordInput.fill(password);
-  49 |         await loginPage.loginButton.click();
-  50 |     }
-  51 |
-  52 |     async takeScreenshot(filename) {
-  53 |         const screenshotsDir = path.join(__dirname, '..', 'screenshots'); // Ensure screenshots dir is at project root
-  54 |         if (!fs.existsSync(screenshotsDir)) {
-  55 |             fs.mkdirSync(screenshotsDir, { recursive: true });
-  56 |         }
-  57 |         await this.page.screenshot({ path: path.join(screenshotsDir, `${filename}.png`) });
-  58 |     }
-  59 |
-  60 |     async scrollToElement(selector) {
-  61 |         const element = await this.page.locator(selector);
-> 62 |         await element.scrollIntoViewIfNeeded();
-     |                       ^ TimeoutError: locator.scrollIntoViewIfNeeded: Timeout 10000ms exceeded.
-  63 |     }
-  64 |
-  65 |     async isTextVisible(text, options = {}) {
-  66 |         const { timeout = 5000 } = options;
-  67 |         try {
-  68 |             await this.page.waitForFunction(
-  69 |                 (textToFind) => {
-  70 |                     const elements = Array.from(document.querySelectorAll('*'));
-  71 |                     return elements.some(el => el.textContent && el.textContent.trim() === textToFind && el.offsetParent !== null);
-  72 |                 },
-  73 |                 text,
-  74 |                 { timeout }
-  75 |             );
-  76 |             return true;
-  77 |         } catch (error) {
-  78 |             // console.log(`Text "${text}" not visible within ${timeout}ms. Error: ${error.message}`);
-  79 |             return false;
-  80 |         }
-  81 |     }
-  82 |
-  83 |     async acceptCookiesIfPresent(cookieButtonSelector = '#cookie_stop') {
-  84 |         try {
-  85 |             const cookieButton = this.page.locator(cookieButtonSelector);
-  86 |             if (await cookieButton.isVisible({ timeout: 2000 })) {
-  87 |                 await cookieButton.click();
-  88 |                 // console.log('Cookie consent accepted.');
-  89 |             }
-  90 |         } catch (error) {
-  91 |             // console.log('Cookie consent banner not found or not visible, or already handled.');
-  92 |         }
-  93 |     }
-  94 | }
-  95 |
-  96 | module.exports = { Utils };
-  97 |
+   28 |     readonly accountDeletedText: Locator;
+   29 |     readonly deleteContinueButton: Locator;
+   30 |     readonly scrollUpArrowButton: Locator;
+   31 |     readonly fullFledgedText: Locator;
+   32 |
+   33 |     constructor(page: Page) {
+   34 |         this.page = page;
+   35 |         this.slider = page.locator('#slider');
+   36 |         this.homeLink = page.locator('a[href="/"]');
+   37 |         this.productsLink = page.locator('a[href="/products"]');
+   38 |         this.cartLink = page.locator('.shop-menu a[href="/view_cart"]');
+   39 |         this.signupLoginLink = page.locator('a[href="/login"]');
+   40 |         this.testCasesLink = page.locator('a.test_cases_list[href="/test_cases"]');
+   41 |         this.apiTestingLink = page.locator('a[href="/api_testing"]');
+   42 |         this.videoTutorialsLink = page.locator('a[href="https://www.youtube.com/c/AutomationExercise"]');
+   43 |         this.contactUsLink = page.locator('a[href="/contact_us"]');
+   44 |         this.subscriptionText = page.locator('h2:has-text("Subscription")');
+   45 |         this.subscriptionEmailInput = page.locator('#subscribe_email');
+   46 |         this.subscriptionButton = page.locator('#subscribe');
+   47 |         this.successAlert = page.locator('#success-subscribe');
+   48 |         this.womenCategoryLink = page.locator("a[href='#Women']");
+   49 |         this.womenDressCategoryLink = page.locator("a[href='/category_products/1']");
+   50 |         this.menCategoryLink = page.locator("a[href='#Men']");
+   51 |         this.menTshirtsCategoryLink = page.locator("a[href='/category_products/3']");
+   52 |         this.categoryView = page.locator(".left-sidebar h2:has-text('Category')");
+   53 |         this.recommendedItemsSection = page.locator('.recommended_items');
+   54 |         this.addedModal = page.locator('.modal-content');
+   55 |         this.viewCartLinkInModal = page.locator('.modal-body a[href="/view_cart"]');
+   56 |         this.deleteAccountLink = page.locator('a[href="/delete_account"]');
+   57 |         this.logoutLink = page.locator('a[href="/logout"]');
+   58 |         this.accountDeletedText = page.locator('h2[data-qa="account-deleted"]');
+   59 |         this.deleteContinueButton = page.locator('a[data-qa="continue-button"]');
+   60 |         this.scrollUpArrowButton = page.locator('#scrollUp');
+   61 |         this.fullFledgedText = page.locator('//div[@class="item active"]//h2[contains(text(),"Full-Fledged practice website")]');
+   62 |     }
+   63 |
+   64 |     // Get all currently active recommended item cards
+   65 |     private getActiveRecommendedItemCards(): Locator {
+   66 |         // Assuming recommended items are within an active carousel slide, and each product is in a 'col-sm-4'
+   67 |         // This might need adjustment if the structure is different (e.g. no 'col-sm-4' or if '.item.active' is not the direct parent)
+   68 |         return this.recommendedItemsSection.locator('.item.active .single-products'); // .single-products is a common wrapper too.
+   69 |     }
+   70 |
+   71 |     // Returns a Locator for the name of a specific recommended item by its display index
+   72 |     getRecommendedItemNameLocator(index: number): Locator {
+   73 |         // Assuming the name is the first direct child <p> of .productinfo
+   74 |         return this.getActiveRecommendedItemCards().nth(index).locator('.productinfo > p').first();
+   75 |     }
+   76 |
+   77 |     // Returns a Locator for the add-to-cart button of a specific recommended item
+   78 |     getRecommendedItemAddToCartButtonLocator(index: number): Locator {
+   79 |         // Targeting the add-to-cart button within productinfo (not the overlay one for recommended items usually)
+   80 |         return this.getActiveRecommendedItemCards().nth(index).locator('.productinfo a.add-to-cart');
+   81 |     }
+   82 |
+   83 |     loggedInAsTextSelector(username: string): string { // Renamed for clarity
+   84 |         return `li a:has-text('Logged in as ${username}')`;
+   85 |     }
+   86 |
+   87 |     async goto(): Promise<void> {
+   88 |         await this.page.goto('https://automationexercise.com/');
+   89 |     }
+   90 |
+   91 |     async clickSignupLoginLink(): Promise<void> {
+   92 |         await this.signupLoginLink.click();
+   93 |     }
+   94 |
+   95 |     async clickProductsLink(): Promise<void> {
+   96 |         await this.productsLink.click();
+   97 |     }
+   98 |
+   99 |     async clickCartLink(): Promise<void> {
+  100 |         await this.cartLink.click();
+  101 |     }
+  102 |
+  103 |     async clickTestCasesLink(): Promise<void> {
+  104 |         await this.testCasesLink.first().click();
+  105 |     }
+  106 |
+  107 |     async clickContactUsLink(): Promise<void> {
+  108 |         await this.contactUsLink.click();
+  109 |     }
+  110 |
+  111 |     async enterSubscriptionEmail(email: string): Promise<void> {
+  112 |         await this.subscriptionEmailInput.fill(email);
+  113 |     }
+  114 |
+  115 |     async clickSubscriptionButton(): Promise<void> {
+  116 |         await this.subscriptionButton.click();
+  117 |     }
+  118 |
+  119 |     async getSuccessSubscriptionMessage(): Promise<string | null> {
+  120 |         return await this.successAlert.textContent();
+  121 |     }
+  122 |
+  123 |     async subscribeToNewsletter(email: string): Promise<void> {
+  124 |         // First, ensure the subscription section is visible (which also implies scrolling if needed)
+  125 |         await this.subscriptionText.scrollIntoViewIfNeeded(); // Ensure the section is in view
+  126 |         await this.subscriptionText.waitFor({ state: 'visible', timeout: 7000 }); // Wait for the header "Subscription"
+  127 |
+> 128 |         await this.subscriptionEmailInput.waitFor({ state: 'visible', timeout: 7000 }); // Increased timeout
+      |                                           ^ TimeoutError: locator.waitFor: Timeout 7000ms exceeded.
+  129 |         await this.subscriptionEmailInput.waitFor({ state: 'enabled', timeout: 3000 }); // Ensure it's interactable
+  130 |         await this.subscriptionEmailInput.fill(email);
+  131 |         await this.subscriptionButton.click();
+  132 |     }
+  133 |
+  134 |     async isSliderVisible(): Promise<boolean> {
+  135 |         return await this.slider.isVisible();
+  136 |     }
+  137 |
+  138 |     async areCategoriesVisible(): Promise<boolean> {
+  139 |         return await this.categoryView.isVisible();
+  140 |     }
+  141 |
+  142 |     async clickWomenCategoryLink(): Promise<void> {
+  143 |         await this.womenCategoryLink.click();
+  144 |     }
+  145 |
+  146 |     async clickWomenDressCategoryLink(): Promise<void> {
+  147 |         await this.womenDressCategoryLink.click();
+  148 |     }
+  149 |
+  150 |     async clickMenCategoryLink(): Promise<void> {
+  151 |         await this.menCategoryLink.click();
+  152 |     }
+  153 |
+  154 |     async clickMenTshirtsCategoryLink(): Promise<void> {
+  155 |         await this.menTshirtsCategoryLink.click();
+  156 |     }
+  157 |
+  158 |     async scrollToBottom(): Promise<void> {
+  159 |         await this.page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  160 |     }
+  161 |
+  162 |     async isRecommendedItemsVisible(): Promise<boolean> {
+  163 |         const recommendedItems = this.recommendedItemsSection; // Use the Locator property
+  164 |         await recommendedItems.scrollIntoViewIfNeeded();
+  165 |         return await recommendedItems.isVisible();
+  166 |     }
+  167 |
+  168 |     async getRecommendedItemName(index: number): Promise<string | null> {
+  169 |         return await this.getRecommendedItemNameLocator(index).textContent();
+  170 |     }
+  171 |
+  172 |     async addRecommendedItemToCart(index: number): Promise<string | null> {
+  173 |         const itemName = await this.getRecommendedItemName(index);
+  174 |         await this.getRecommendedItemAddToCartButtonLocator(index).click();
+  175 |         await this.addedModal.waitFor({ state: 'visible', timeout: 5000 });
+  176 |         return itemName;
+  177 |     }
+  178 |
+  179 |     async clickViewCartModalLink(): Promise<void> {
+  180 |         await this.addedModal.waitFor({ state: 'visible', timeout: 5000 });
+  181 |         await this.viewCartLinkInModal.click();
+  182 |         await this.addedModal.waitFor({ state: 'hidden', timeout: 5000 });
+  183 |     }
+  184 |
+  185 |     async isLoggedInAsVisible(username: string): Promise<boolean> {
+  186 |         return await this.page.locator(this.loggedInAsTextSelector(username)).isVisible();
+  187 |     }
+  188 |
+  189 |     async clickDeleteAccountLink(): Promise<void> {
+  190 |         await this.deleteAccountLink.click();
+  191 |     }
+  192 |
+  193 |     async clickLogoutLink(): Promise<void> {
+  194 |         await this.logoutLink.click();
+  195 |     }
+  196 |
+  197 |     async isAccountDeletedVisible(): Promise<boolean> {
+  198 |         return await this.accountDeletedText.isVisible();
+  199 |     }
+  200 |
+  201 |     async clickDeleteContinueButton(): Promise<void> {
+  202 |         await this.deleteContinueButton.click();
+  203 |     }
+  204 |
+  205 |     async isSubscriptionTextVisible(): Promise<boolean> {
+  206 |         const subText = this.subscriptionText;
+  207 |         await subText.scrollIntoViewIfNeeded();
+  208 |         return await subText.isVisible();
+  209 |     }
+  210 |
+  211 |     async clickScrollUpArrow(): Promise<void> {
+  212 |         const arrow = this.scrollUpArrowButton;
+  213 |         await arrow.waitFor({ state: 'visible', timeout: 5000 });
+  214 |         await arrow.click();
+  215 |     }
+  216 |
+  217 |     async isFullFledgedTextVisible(): Promise<boolean> {
+  218 |         const textLocator = this.fullFledgedText;
+  219 |         await textLocator.waitFor({ state: 'visible', timeout: 10000 });
+  220 |         return await textLocator.isVisible();
+  221 |     }
+  222 |
+  223 |     async scrollToTop(): Promise<void> {
+  224 |         await this.page.evaluate(() => window.scrollTo(0, 0));
+  225 |     }
+  226 | }
+  227 |
 ```

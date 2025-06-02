@@ -2,7 +2,7 @@ import { test, expect, type Page } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { Utils } from '../utils/utils';
-import type { ProductsFile } from '../../types/testData';
+import type { ProductsFile } from 'types/testData';
 
 const productsTestData = Utils.loadTestData('products.json') as ProductsFile;
 const viewProductData = productsTestData.viewProduct;

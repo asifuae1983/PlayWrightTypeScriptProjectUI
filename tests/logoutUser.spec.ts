@@ -3,7 +3,7 @@ import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { SignupPage, type AccountInformation, type AddressInformation } from '../pages/SignupPage';
 import { Utils } from '../utils/utils';
-import type { UsersFile, UserData } from '../../types/testData';
+import type { UsersFile, UserData } from 'types/testData';
 
 const usersTestData = Utils.loadTestData('users.json') as UsersFile;
 const loadedUserData: UserData = usersTestData.loginUserCorrect; // Using a complete user profile for registration

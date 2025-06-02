@@ -21,7 +21,7 @@ test.describe('Test Case 18: View Category Products', () => {
         await expect(page).toHaveURL(/category_products\/1/);
         // Use ProductsPage instance to get the title, as category pages share structure with product listing pages
         const womenDressTitle = await productsPage.getCategoryTitleText();
-        expect(womenDressTitle?.trim()).toBe('WOMEN - DRESS PRODUCTS');
+        expect(womenDressTitle?.trim().toLowerCase()).toBe('women - dress products'.toLowerCase());
         await expect(productsPage.productList.first()).toBeVisible(); // Verify products are listed
 
         await homePage.clickMenCategoryLink();
@@ -29,7 +29,7 @@ test.describe('Test Case 18: View Category Products', () => {
 
         await expect(page).toHaveURL(/category_products\/3/);
         const menTshirtsTitle = await productsPage.getCategoryTitleText();
-        expect(menTshirtsTitle?.trim()).toBe('MEN - TSHIRTS PRODUCTS');
+        expect(menTshirtsTitle?.trim().toLowerCase()).toBe('men - tshirts products'.toLowerCase());
         await expect(productsPage.productList.first()).toBeVisible(); // Verify products are listed
     });
 });

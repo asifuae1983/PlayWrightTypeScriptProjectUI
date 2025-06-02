@@ -3,7 +3,7 @@ import { HomePage } from '../pages/HomePage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { CartPage } from '../pages/CartPage';
 import { Utils } from '../utils/utils';
-import type { ProductsFile, Product as ProductType } from '../../types/testData'; // Adjusted path
+import type { ProductsFile, Product as ProductType } from 'types/testData'; // Adjusted path
 
 // Define a more specific type for products once they are in the cart for verification
 interface ExpectedProductInCart extends ProductType {
