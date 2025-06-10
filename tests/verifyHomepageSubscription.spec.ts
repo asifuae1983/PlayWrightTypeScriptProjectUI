@@ -27,13 +27,15 @@ test.describe('Test Case 10: Verify Subscription in home page', () => {
         
         // Use the POM method that encapsulates scrolling, waiting, filling, and clicking
         await homePage.subscribeToNewsletter(emailToSubscribe);
+        console.log('Page content:', await homePage.page.content());
+        console.log('Is success alert visible?', await homePage.successAlert.isVisible());
 
-        // The successAlert wait and getSuccessSubscriptionMessage are already part of the POM method or should be.
-        // Let's assume getSuccessSubscriptionMessage handles its own wait if needed.
-        // The waitFor for successAlert is still fine here if subscribeToNewsletter doesn't wait for it.
-        await homePage.successAlert.waitFor({ state: 'visible', timeout: 10000 }); 
-        const actualSuccessMessage = await homePage.getSuccessSubscriptionMessage();
-        expect(actualSuccessMessage?.trim()).toBe(subscriptionData.expectedSuccessMessage);
-        await expect(homePage.successAlert).toBeVisible();
+        if (await homePage.successAlert.isVisible()) {
+          const actualText = await homePage.successAlert.textContent();
+          console.log('Actual success alert text:', actualText);
+        }
+
+        await expect(homePage.successAlert).toBeVisible({ timeout: 10000 });
+        await expect(homePage.successAlert).toContainText(subscriptionData.expectedSuccessMessage, { timeout: 10000 });
     });
 });

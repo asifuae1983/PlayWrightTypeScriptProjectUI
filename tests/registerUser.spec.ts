@@ -11,7 +11,7 @@ const loadedUserData: UserData = usersTestData.registerUser;
 test.describe('Test Case 1: Register User', () => {
     let homePage: HomePage;
     let loginPage: LoginPage;
-    let signupPage: SignupPage;
+    let signupPage: SignupPage; 
 
     // Generate email and name once for the describe block
     const randomEmail = Utils.generateRandomEmail((loadedUserData.firstName || "test").toLowerCase());
@@ -27,6 +27,8 @@ test.describe('Test Case 1: Register User', () => {
     });
 
     test('should register a new user, verify login, and delete account', async ({ page }: { page: Page }) => {
+        const utils = new Utils(page);
+
         await expect(page).toHaveURL('https://automationexercise.com/');
         await expect(homePage.isSliderVisible()).resolves.toBe(true);
 
@@ -67,10 +69,7 @@ test.describe('Test Case 1: Register User', () => {
         await expect(signupPage.accountCreatedText).toBeVisible();
         await signupPage.clickContinueButton();
 
-        const adSelector = '#ad_position_box';
-        if (await page.locator(adSelector).isVisible({ timeout: 5000 })) {
-            await page.evaluate((sel) => document.querySelector(sel)?.remove(), adSelector);
-        }
+        await utils.removeAdIfVisible();
 
         const loggedInAsSelector = homePage.loggedInAsTextSelector(randomName);
         try {
@@ -78,21 +77,15 @@ test.describe('Test Case 1: Register User', () => {
         } catch (e) {
             console.log("'Logged in as' not visible, attempting to refresh and check again.");
             await page.reload({ waitUntil: 'domcontentloaded' });
-            if (await page.locator(adSelector).isVisible({ timeout: 5000 })) {
-                await page.evaluate((sel) => document.querySelector(sel)?.remove(), adSelector);
-            }
+            await utils.removeAdIfVisible();
             await page.waitForSelector(loggedInAsSelector, { timeout: 15000 });
         }
         await expect(page.locator(loggedInAsSelector)).toBeVisible();
 
-        if (await page.locator(adSelector).isVisible({ timeout: 5000 })) {
-            await page.evaluate((sel) => document.querySelector(sel)?.remove(), adSelector);
-        }
+        await utils.removeAdIfVisible();
         await homePage.clickDeleteAccountLink();
 
-        if (await page.locator(adSelector).isVisible({ timeout: 5000 })) {
-            await page.evaluate((sel) => document.querySelector(sel)?.remove(), adSelector);
-        }
+        await utils.removeAdIfVisible();
         await expect(homePage.accountDeletedText).toBeVisible({ timeout: 10000 });
         await homePage.clickDeleteContinueButton();
 

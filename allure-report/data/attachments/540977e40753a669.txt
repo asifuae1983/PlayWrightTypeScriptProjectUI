@@ -1,0 +1,6 @@
+Locator  : getByText('Blue Top', { exact: true }).first()
+Count    : 1
+Order success message not visible within 10000ms. Error: TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator('#success_message') to be visible
+

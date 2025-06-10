@@ -14,14 +14,16 @@ export class ContactUsPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.getInTouchText = page.locator('h2:has-text("Get In Touch")');
+        // this.getInTouchText = page.locator('h2:has-text("Get In Touch")');
+        this.getInTouchText = page.getByText('Get In Touch', { exact: true });
         this.nameInput = page.locator('input[data-qa="name"]');
         this.emailInput = page.locator('input[data-qa="email"]');
         this.subjectInput = page.locator('input[data-qa="subject"]');
         this.messageTextArea = page.locator('textarea[data-qa="message"]');
         this.uploadFileInput = page.locator('input[name="upload_file"]');
         this.submitButton = page.locator('input[data-qa="submit-button"]');
-        this.successMessage = page.locator('.status.alert.alert-success');
+        // this.successMessage = page.locator('.status.alert.alert-success');
+        this.successMessage = page.locator('#contact-page').getByText('Success! Your details have');
         this.homeButton = page.locator('#form-section a.btn.btn-success');
     }
 
@@ -50,6 +52,7 @@ export class ContactUsPage {
     }
 
     async getSuccessMessage(): Promise<string | null> {
+        await this.successMessage.waitFor({ state: 'visible' });
         return await this.successMessage.textContent();
     }
 

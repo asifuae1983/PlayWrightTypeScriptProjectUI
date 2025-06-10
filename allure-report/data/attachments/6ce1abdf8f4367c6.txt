@@ -1,0 +1,3 @@
+Locator  : getByText('Blue Top', { exact: true }).first()
+Count    : 1
+Cleaned full name: Mrs. Jacey Schoen

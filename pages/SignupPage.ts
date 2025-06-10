@@ -33,6 +33,9 @@ export interface SignupUserDetails extends AccountInformation, AddressInformatio
     email: string;
     // password is also critical
     password: string;
+    address1: string;
+    address2: string;
+    address3?: string; // <-- Add this line
 }
 
 
@@ -134,7 +137,10 @@ export class SignupPage {
     async fillAddressInformationPart(data: AddressInformation): Promise<void> {
         await this.firstNameInput.fill(data.firstName);
         await this.lastNameInput.fill(data.lastName);
-        if(data.company) await this.companyInput.fill(data.company);
+        if(data.company) {
+            await this.companyInput.fill(data.company);
+            console.log('Filled company:', data.company);
+        }
         await this.address1Input.fill(data.address1);
         if(data.address2) await this.address2Input.fill(data.address2);
 
@@ -177,5 +183,33 @@ export class SignupPage {
 
     async isAccountInfoTextVisible(): Promise<boolean> {
         return await this.accountInfoText.isVisible();
+    }
+
+    async extractCompanyFromCheckout(): Promise<string | null> {
+        // Print the address block for debugging
+        const addressBlockHTML = await this.page.locator('ul.address').innerHTML();
+        console.log('Checkout address block HTML:', addressBlockHTML);
+
+        // Try the most common class
+        let company = await this.page.locator('li.address_company').textContent();
+        if (company && company.trim()) {
+            console.log('Extracted company from checkout (by class):', company);
+            return company.trim();
+        }
+
+        // Fallback: try the 3rd <li> in the address block
+        company = await this.page.locator('ul.address li:nth-child(3)').textContent();
+        if (company && company.trim()) {
+            console.log('Extracted company from checkout (by position):', company);
+            return company.trim();
+        }
+
+        // If still not found, log and return null
+        console.warn('Company not found in checkout address block.');
+        return null;
+    }
+
+    async debugCheckoutAddressBlock(): Promise<void> {
+        console.log('Checkout address block HTML:', await this.page.locator('ul.address').innerHTML());
     }
 }

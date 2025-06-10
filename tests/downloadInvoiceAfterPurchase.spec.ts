@@ -1,21 +1,21 @@
 import { test, expect, type Page, type Download } from '@playwright/test';
-import * as path from 'path'; // For potential file saving
-import * as fs from 'fs';     // For file system checks if saving
+import * as path from 'path';
+import * as fs from 'fs';
 
 import { HomePage } from '../pages/HomePage';
-import { SignupPage, type SignupUserDetails } from '../pages/SignupPage'; // Import interface
+import { SignupPage, type SignupUserDetails } from '../pages/SignupPage';
 import { LoginPage } from '../pages/LoginPage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { PaymentPage } from '../pages/PaymentPage';
 import { faker } from '@faker-js/faker';
-import type { PaymentDetails } from 'types/testData'; // Import specific type
+import type { PaymentDetails } from 'types/testData';
 
-// const downloadsDir = path.join(__dirname, '..', 'downloads');
-// if (!fs.existsSync(downloadsDir)) {
-//     fs.mkdirSync(downloadsDir, { recursive: true });
-// }
+const downloadsDir = path.join(__dirname, '..', 'downloads');
+if (!fs.existsSync(downloadsDir)) {
+    fs.mkdirSync(downloadsDir, { recursive: true });
+}
 
 test.describe('Test Case 24: Download Invoice After Purchase Order', () => {
     let homePage: HomePage;
@@ -25,7 +25,7 @@ test.describe('Test Case 24: Download Invoice After Purchase Order', () => {
     let cartPage: CartPage;
     let checkoutPage: CheckoutPage;
     let paymentPage: PaymentPage;
-    let userData: SignupUserDetails & { signupName: string }; // Combine for all needed fields
+    let userData: SignupUserDetails & { signupName: string };
     let paymentData: PaymentDetails;
 
     test.beforeEach(async ({ page }: { page: Page }) => {
@@ -40,14 +40,14 @@ test.describe('Test Case 24: Download Invoice After Purchase Order', () => {
         const rawFirstName = faker.person.firstName();
         userData = {
             title: faker.helpers.arrayElement(['Mr', 'Mrs'] as const),
-            name: rawFirstName, // Used for initial signup name field
-            signupName: rawFirstName, // Explicitly for clarity where 'name' for signup is used
+            name: rawFirstName,
+            signupName: rawFirstName,
             email: faker.internet.email(),
             password: faker.internet.password({ length: 10, prefix: 'Test!' }),
             dayOfBirth: faker.number.int({ min: 1, max: 28 }).toString(),
             monthOfBirth: faker.date.month(),
             yearOfBirth: faker.number.int({ min: 1970, max: 2005 }).toString(),
-            firstName: rawFirstName, // Actual first name for address
+            firstName: rawFirstName,
             lastName: faker.person.lastName(),
             company: faker.company.name(),
             address1: faker.location.streetAddress(),
@@ -57,8 +57,8 @@ test.describe('Test Case 24: Download Invoice After Purchase Order', () => {
             city: faker.location.city(),
             zipcode: faker.location.zipCode(),
             mobileNumber: faker.phone.number(),
-            newsletter: true, // Example
-            optin: true       // Example
+            newsletter: true,
+            optin: true
         };
 
         paymentData = {
@@ -78,7 +78,6 @@ test.describe('Test Case 24: Download Invoice After Purchase Order', () => {
         await loginPage.enterSignupEmail(userData.email);
         await loginPage.clickSignupButton();
 
-        // fillAccountDetails expects password, ensure it's passed if interface requires it
         await signupPage.fillAccountDetails(userData);
         await signupPage.clickCreateAccountButton();
         await expect(signupPage.isAccountCreatedVisible()).resolves.toBeTruthy();
@@ -111,18 +110,19 @@ test.describe('Test Case 24: Download Invoice After Purchase Order', () => {
 
         await expect(paymentPage.isOrderPlacedVisible()).resolves.toBeTruthy();
         const successText = await paymentPage.getOrderSuccessMessage();
-        expect(successText).toContain('Your order has been placed successfully!');
-
-        const results = await Promise.all([
-            page.waitForEvent('download', {timeout: 10000}),
+        // expect(successText).toContain('Your order has been placed successfully!');
+        expect(successText).toContain('Congratulations! Your order has been confirmed!')
+        // Download invoice and save to disk
+        const [download] = await Promise.all([
+            page.waitForEvent('download', { timeout: 10000 }),
             paymentPage.clickDownloadInvoice()
         ]);
-        const download: Download = results[0];
 
-        expect(download.suggestedFilename()).toBe('invoice.txt');
-        // const filePath = path.join(downloadsDir, download.suggestedFilename());
-        // await download.saveAs(filePath);
-        // expect(fs.existsSync(filePath)).toBe(true);
+        const filename = download.suggestedFilename();
+        expect(filename).toBe('invoice.txt');
+        const filePath = path.join(downloadsDir, filename);
+        await download.saveAs(filePath);
+        expect(fs.existsSync(filePath)).toBe(true);
 
         await paymentPage.clickContinueButton();
         await expect(page).toHaveURL(/.*\/$/);

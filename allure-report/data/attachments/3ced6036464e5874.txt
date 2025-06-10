@@ -1,0 +1,4 @@
+Filled company: Huel, Leuschke and Tromp
+Locator  : getByText('Blue Top', { exact: true }).first()
+Count    : 1
+Cleaned full name: Mrs. Vanessa Larkin

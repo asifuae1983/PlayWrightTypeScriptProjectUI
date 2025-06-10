@@ -98,4 +98,17 @@ export class Utils {
             // console.log('Cookie consent banner not found or not visible, or already handled.');
         }
     }
+     /**
+     * Removes an ad overlay if it is visible on the page.
+     * @param adSelector - CSS selector for the ad element (default: '#ad_position_box')
+     */
+    async removeAdIfVisible(adSelector: string = '#ad_position_box'): Promise<void> {
+        try {
+            if (await this.page.locator(adSelector).isVisible({ timeout: 5000 }).catch(() => false)) {
+                await this.page.evaluate((sel) => document.querySelector(sel)?.remove(), adSelector);
+            }
+        } catch (error) {
+            console.log(`Error removing ad: ${error}`);
+        }
+    }
 }

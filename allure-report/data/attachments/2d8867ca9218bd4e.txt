@@ -1,0 +1,4 @@
+Filled company: Schaden Inc
+Locator  : getByText('Blue Top', { exact: true }).first()
+Count    : 1
+Cleaned full name: Mrs. Dion Stamm-DuBuque

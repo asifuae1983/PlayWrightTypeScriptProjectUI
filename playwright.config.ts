@@ -46,9 +46,9 @@ const config: PlaywrightTestConfig = {
 
     /* Headless mode configuration */
     headless: true, // Set to false to watch tests run in a browser
-
+    
     /* Viewport size */
-    viewport: { width: 1280, height: 720 },
+    // viewport: { width: 1280, height: 720 },
 
     /* Permissions */
     permissions: ['clipboard-read', 'clipboard-write'],
@@ -62,7 +62,12 @@ const config: PlaywrightTestConfig = {
     {
       name: 'chromium',
       use: {
-        ...devices['Desktop Chrome'],
+        // ...devices['Desktop Chrome'],
+        viewport: null, // Allow browser to use full available screen
+        launchOptions: {
+          args: ['--start-maximized'],
+          slowMo: 1000, // Slow down actions by 1 second for debugging purposes
+        },
       },
     },
 

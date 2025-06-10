@@ -1,0 +1,4 @@
+Locator  : getByText('Blue Top', { exact: true }).first()
+Count    : 1
+Locator  : getByText('Men Tshirt', { exact: true }).first()
+Count    : 1

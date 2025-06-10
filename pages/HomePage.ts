@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { type Page, type Locator } from '@playwright/test';
 
 export class HomePage {
@@ -36,15 +37,15 @@ export class HomePage {
         this.homeLink = page.locator('a[href="/"]');
         this.productsLink = page.locator('a[href="/products"]');
         this.cartLink = page.locator('.shop-menu a[href="/view_cart"]');
-        this.signupLoginLink = page.locator('a[href="/login"]');
+        this.signupLoginLink = page.locator('a:has-text("Signup / Login")');
         this.testCasesLink = page.locator('a.test_cases_list[href="/test_cases"]');
         this.apiTestingLink = page.locator('a[href="/api_testing"]');
         this.videoTutorialsLink = page.locator('a[href="https://www.youtube.com/c/AutomationExercise"]');
         this.contactUsLink = page.locator('a[href="/contact_us"]');
         this.subscriptionText = page.locator('h2:has-text("Subscription")');
-        this.subscriptionEmailInput = page.locator('#subscribe_email');
+        this.subscriptionEmailInput = page.getByRole('textbox', { name: 'Your email address' })
         this.subscriptionButton = page.locator('#subscribe');
-        this.successAlert = page.locator('#success-subscribe');
+        this.successAlert = page.locator('.alert-success.alert', { hasText: 'You have been successfully subscribed!' }); // or whatever the correct selector is
         this.womenCategoryLink = page.locator("a[href='#Women']");
         this.womenDressCategoryLink = page.locator("a[href='/category_products/1']");
         this.menCategoryLink = page.locator("a[href='#Men']");
@@ -89,6 +90,9 @@ export class HomePage {
     }
 
     async clickSignupLoginLink(): Promise<void> {
+        // Wait for the link to be visible and enabled before clicking
+        await this.signupLoginLink.waitFor({ state: 'visible', timeout: 10000 });
+        await expect(this.signupLoginLink).toBeEnabled({ timeout: 5000 });
         await this.signupLoginLink.click();
     }
 
@@ -128,7 +132,7 @@ export class HomePage {
         await this.subscriptionText.waitFor({ state: 'visible', timeout: 7000 }); 
 
         await this.subscriptionEmailInput.waitFor({ state: 'visible', timeout: 7000 }); 
-        await this.subscriptionEmailInput.waitFor({ state: 'enabled', timeout: 3000 }); 
+        await expect(this.subscriptionEmailInput).toBeEnabled({ timeout: 3000 });
         await this.subscriptionEmailInput.fill(email);
         await this.subscriptionButton.click();
     }
@@ -224,5 +228,13 @@ export class HomePage {
 
     async scrollToTop(): Promise<void> {
         await this.page.evaluate(() => window.scrollTo(0, 0));
+    }
+
+    async getLoggedInUserName(): Promise<string | null> {
+        // Adjust the selector to match your actual logged-in user element
+        // Example: <a href="/profile"><i class="fa fa-user"></i> John Doe</a>
+        const locator = this.page.locator('a:has(i.fa-user)');
+        if (await locator.count() === 0) return null;
+        return (await locator.first().textContent())?.replace(/\s+/, ' ').trim() || null;
     }
 }

@@ -23,7 +23,7 @@ export class PaymentPage {
         this.expiryMonthInput = page.locator('input[data-qa="expiry-month"]');
         this.expiryYearInput = page.locator('input[data-qa="expiry-year"]');
         this.payAndConfirmOrderButton = page.locator('button[data-qa="pay-button"]');
-        this.orderSuccessMessage = page.locator('#success_message .alert-success');
+        this.orderSuccessMessage = this.page.locator('p', { hasText: 'Congratulations!' });
         this.orderPlacedText = page.locator('h2[data-qa="order-placed"]');
         this.downloadInvoiceButton = page.locator('a.btn-default.check_out'); // Specific to download invoice
         this.continueButton = page.locator('a[data-qa="continue-button"]'); // Specific to continue after order
@@ -48,9 +48,7 @@ export class PaymentPage {
 
     async getOrderSuccessMessage(timeout: number = 10000): Promise<string | null> {
         try {
-            const successMessageContainer = this.page.locator('#success_message');
-            await successMessageContainer.waitFor({ state: 'visible', timeout }); // Wait for parent container
-            await this.orderSuccessMessage.waitFor({ state: 'visible', timeout }); // Then wait for message itself
+            await this.orderSuccessMessage.waitFor({ state: 'visible', timeout });
             return await this.orderSuccessMessage.textContent();
         } catch (error) {
             console.log(`Order success message not visible within ${timeout}ms. Error: ${error}`);

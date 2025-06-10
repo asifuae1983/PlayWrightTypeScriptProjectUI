@@ -1,4 +1,4 @@
-import { type Page, type Locator } from '@playwright/test';
+import { type Page, type Locator, expect } from '@playwright/test';
 
 export class CartPage {
     readonly page: Page;
@@ -16,16 +16,16 @@ export class CartPage {
 
     constructor(page: Page) {
         this.page = page;
-        this.shoppingCartText = page.locator('#cart_info:has-text("Shopping Cart")'); // Potentially for header text
+        this.shoppingCartText = page.getByText('Shopping Cart')
         this.cartTable = page.locator('#cart_info_table'); // For the main cart table visibility
         this.cartItems = page.locator('#cart_info_table tbody tr'); // For individual cart item rows
         this.proceedToCheckoutButton = page.locator('.col-sm-6 .btn.check_out');
         this.registerLoginLink = page.locator('.modal-body p a[href="/login"]');
         this.emptyCartText = page.locator('#empty_cart p'); // For "Cart is empty!" message
         this.cartSubscriptionText = page.locator('h2:has-text("Subscription")');
-        this.cartSubscriptionEmailInput = page.locator('#subscribe_email');
+        this.cartSubscriptionEmailInput = page.locator('input[placeholder="Your email address"]');
         this.cartSubscriptionButton = page.locator('#subscribe');
-        this.cartSuccessAlert = page.locator('#success-subscribe');
+        this.cartSuccessAlert = page.locator('.alert-success.alert');
         this.productNameLinksInCart = page.locator('#cart_info_table tbody tr td.cart_description a'); // Specific locator for product names
     }
 
@@ -70,7 +70,8 @@ export class CartPage {
         await this.cartSubscriptionText.scrollIntoViewIfNeeded(); 
         await this.cartSubscriptionText.waitFor({ state: 'visible', timeout: 7000 }); 
         await this.cartSubscriptionEmailInput.waitFor({ state: 'visible', timeout: 7000 }); 
-        await this.cartSubscriptionEmailInput.waitFor({ state: 'enabled', timeout: 3000 }); 
+        // await this.cartSubscriptionEmailInput.waitFor({ state: 'enabled', timeout: 3000 }); 
+        await expect(this.cartSubscriptionEmailInput).toBeEnabled({ timeout: 3000 });
         await this.cartSubscriptionEmailInput.fill(email);
         await this.cartSubscriptionButton.click();
     }
@@ -132,5 +133,10 @@ export class CartPage {
         }
 
         return await nameLocators.allTextContents();
+    }
+
+    async logCartInfoText(): Promise<void> {
+        const cartInfoText = await this.page.locator('#cart_info').textContent();
+        console.log('cart_info text:', cartInfoText);
     }
 }

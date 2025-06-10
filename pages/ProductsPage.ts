@@ -1,4 +1,4 @@
-import { type Page, type Locator } from '@playwright/test';
+import { type Page, type Locator, expect } from '@playwright/test';
 
 export class ProductsPage {
     readonly page: Page;
@@ -68,14 +68,22 @@ export class ProductsPage {
         this.writeYourReviewTextForm = page.locator('form#review-form'); // Form for writing review
     }
 
+    // private async getProductCardWrapperByName(name: string){
+    //     this.page.getByText('Blue Top').nth(1);
+    // }
     // --- Start of Locator Strategy v5 for Product Listings ---
 
     private async getProductCardWrapperByName(name: string): Promise<Locator> {
         // Strategy v5: Find the <p> with the exact normalized name within a .productinfo div,
         // then navigate to its first ancestor div.product-image-wrapper.
-        const selector = `//div[@class='productinfo']/p[normalize-space(.)='${name}']/ancestor::div[@class='product-image-wrapper'][1]`;
-        const locator = this.page.locator(selector);
+        // const selector = `//div[@class='productinfo']/p[normalize-space(.)='${name}']/ancestor::div[@class='product-image-wrapper'][1]`;
+        const selector = 'this.page.getByText(name, { exact: true }).first();' 
+        
+        // const locator = this.page.locator(selector);
+        const locator = this.page.getByText(name, { exact: true }).first();
         const count = await locator.count();
+        console.log("Locator  :", locator);
+        console.log("Count    :", count);
         
         if (count === 0) {
             console.log(`[ProductsPage V5] Product card for "${name}" not found using selector: ${selector}`);
@@ -168,12 +176,15 @@ export class ProductsPage {
         }
 
         await productCardWrapper.hover({ timeout: 7000 });
-        const addToCartButton = productCardWrapper.locator('div.product-overlay a.add-to-cart'); 
+        // Use productName variable, not a hardcoded string
+        const addToCartButton = this.page
+          .locator('.productinfo.text-center', { hasText: productName })
+          .locator('a:has-text("Add to cart")'); 
         await addToCartButton.waitFor({ state: 'visible', timeout: 5000 });
         await addToCartButton.click();
     }
 
-    async getProductPriceFromListing(productName: string): Promise<string> {
+    async getProductPriceFromListing1(productName: string): Promise<string> {
         await this.allProductsSection.waitFor({ state: 'visible', timeout: 10000 });
         const productCardWrapper = await this.getProductCardWrapperByName(productName); 
 
@@ -182,9 +193,32 @@ export class ProductsPage {
             console.log(`[ProductsPage] GetPrice: Product card for "${productName}" not found. Available: ${allNames.map(n => n.trim()).join('; ')}`);
             throw new Error(`Cannot get price for "${productName}": Product card not found.`);
         }
-        const priceElement = productCardWrapper.locator('div.productinfo h2'); 
-        await priceElement.waitFor({ state: 'visible', timeout: 7000 });
+        // const priceElement = productCardWrapper.locator('div.productinfo h2'); 
+        // const priceElement = productCardWrapper.locator('h2');
+        // const priceElement = this.page.locator('.productinfo.text-center', { hasText: '${productName}' }).locator('h2');
+        const priceElement = this.page.locator('.productinfo.text-center', { hasText: productName }).locator('h2');
+        console.log("priceElement : ", await priceElement.textContent());
+        // await priceElement.waitFor({ state: 'visible', timeout: 15000 });
+        await expect(priceElement).toBeVisible({ timeout: 15000 });
         return (await priceElement.innerText()).trim();
+    }
+
+    async getProductPriceFromListing(productName: string): Promise<string> {
+        await this.allProductsSection.waitFor({ state: 'visible', timeout: 10000 });
+        const productCardWrapper = await this.getProductCardWrapperByName(productName); 
+
+        if (await productCardWrapper.count() === 0) { 
+          const allNames = await this.page.locator('div.productinfo p').allTextContents(); 
+          console.log(`[ProductsPage] GetPrice: Product card for "${productName}" not found. Available: ${allNames.map(n => n.trim()).join('; ')}`);
+          throw new Error(`Cannot get price for "${productName}": Product card not found.`);
+        }
+
+    // Use the variable directly, not as a string template
+        const priceElement = this.page.locator('.productinfo.text-center', { hasText: productName }).locator('h2');
+        await expect(priceElement).toBeVisible({ timeout: 15000 });
+        const priceText = (await priceElement.textContent())?.trim() ?? '';
+        console.log("priceElement : ", priceText);
+        return priceText;
     }
 
     async clickContinueShopping(): Promise<void> {

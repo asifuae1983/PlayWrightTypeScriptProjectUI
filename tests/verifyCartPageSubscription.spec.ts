@@ -30,13 +30,18 @@ test.describe('Test Case 11: Verify Subscription in Cart page', () => {
 
         // Use the POM method that encapsulates scrolling, waiting, filling, and clicking
         await cartPage.subscribeWithEmail(emailToSubscribe);
-        
-        // The cartSuccessAlert wait and getCartSuccessSubscriptionMessage are already part of the POM method or should be.
-        // Let's assume getCartSuccessSubscriptionMessage handles its own wait if needed.
-        // The waitFor for cartSuccessAlert is still fine here if subscribeWithEmail doesn't wait for it.
-        await cartPage.cartSuccessAlert.waitFor({ state: 'visible', timeout: 10000 });
-        const actualSuccessMessage = await cartPage.getCartSuccessSubscriptionMessage();
-        expect(actualSuccessMessage?.trim()).toBe(subscriptionData.expectedSuccessMessage);
-        await expect(cartPage.cartSuccessAlert).toBeVisible();
+
+        // Debug: log page content and alert visibility
+        console.log('Page content:', await cartPage.page.content());
+        const isVisible = await cartPage.cartSuccessAlert.isVisible();
+        console.log('Is cart success alert visible?', isVisible);
+
+        if (isVisible) {
+            const actualText = await cartPage.cartSuccessAlert.textContent();
+            console.log('Actual cart success alert text:', actualText);
+        }
+
+        await expect(cartPage.cartSuccessAlert).toBeVisible({ timeout: 10000 });
+        await expect(cartPage.cartSuccessAlert).toContainText(subscriptionData.expectedSuccessMessage, { timeout: 10000 });
     });
 });

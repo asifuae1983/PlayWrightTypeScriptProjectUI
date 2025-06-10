@@ -72,8 +72,8 @@ export interface ProductsFile {
 export interface ContactUsData {
   namePrefix?: string;
   emailPrefix?: string;
-  name?: string; // Optional if generated
-  email?: string; // Optional if generated
+  name?: string;
+  email?: string;
   subject: string;
   message: string;
   testFileName: string;

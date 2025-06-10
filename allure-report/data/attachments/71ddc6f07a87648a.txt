@@ -1,0 +1,39 @@
+Filled company: Barrows, Aufderhar and Nitzsche
+Locator  : getByText('Blue Top', { exact: true }).first()
+Count    : 1
+userData: {
+  title: 'Mrs',
+  signupName: 'Gust',
+  email: 'Jedidiah20@yahoo.com',
+  password: 'Test!p3wvt',
+  dayOfBirth: '4',
+  monthOfBirth: 'February',
+  yearOfBirth: '1977',
+  firstName: 'Orval',
+  lastName: 'Fay',
+  company: 'Barrows, Aufderhar and Nitzsche',
+  address1: '54599 Green Close',
+  address2: 'Apt. 478',
+  address3: 'magnam caelum',
+  country: 'United States',
+  state: 'Arkansas',
+  city: 'Boganside',
+  zipcode: '04495',
+  mobileNumber: '(869) 411-7693 x586',
+  newsletter: true,
+  optin: true
+}
+deliveryDetails: {
+  title: 'Mrs.',
+  firstName: 'Orval',
+  lastName: 'Fay',
+  company: '',
+  address1: 'Barrows, Aufderhar and Nitzsche',
+  address2: '54599 Green Close',
+  address3: 'Apt. 478',
+  city: 'Boganside',
+  state: 'Arkansas',
+  zipcode: '04495',
+  country: 'United States',
+  phone: '(869) 411-7693 x586'
+}

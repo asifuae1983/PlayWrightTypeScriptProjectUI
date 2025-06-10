@@ -52,7 +52,7 @@ test.describe('Test Case 16: Place Order: Login before Checkout', () => {
             optin: loadedExistingUserData.optin || false,
         };
         const addressInfo: AddressInformation = {
-            firstName: userName, // Or loadedExistingUserData.firstName
+            firstName: loadedExistingUserData.firstName || userName, // Ensure string, fallback to generated name
             lastName: loadedExistingUserData.lastName || 'TestUser',
             company: loadedExistingUserData.company || 'Test Corp',
             address1: loadedExistingUserData.address1 || '123 Test St',
