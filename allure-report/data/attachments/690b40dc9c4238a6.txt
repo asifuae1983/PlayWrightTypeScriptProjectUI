@@ -1,4 +1,0 @@
-Filled company: Klein - Gislason
-Locator  : getByText('Blue Top', { exact: true }).first()
-Count    : 1
-Logged in user (UI): Logged in as Garrison Expected: Garrison Garrison Connelly

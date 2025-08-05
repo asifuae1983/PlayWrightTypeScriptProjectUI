@@ -1,4 +1,0 @@
-Filled company: Little Group
-Locator  : getByText('Blue Top', { exact: true }).first()
-Count    : 1
-Cleaned full name: Mrs. Cristal Price

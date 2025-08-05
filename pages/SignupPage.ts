@@ -1,4 +1,7 @@
 import { type Page, type Locator } from '@playwright/test';
+import { HomePage } from './HomePage';         
+import { LoginPage } from './LoginPage';       
+import { Utils } from '../utils/utils';  
 
 // Interface for account information, matching typical userData structure
 export interface AccountInformation {
@@ -211,5 +214,21 @@ export class SignupPage {
 
     async debugCheckoutAddressBlock(): Promise<void> {
         console.log('Checkout address block HTML:', await this.page.locator('ul.address').innerHTML());
+    }
+
+    async performCompleteRegistration(name: string, email: string, userDetails: SignupUserDetails): Promise<void> {
+        const homePage = new HomePage(this.page);
+        const loginPage = new LoginPage(this.page);
+        const utils = new Utils(this.page);
+
+        // Navigate to signup
+        await homePage.clickSignupLoginLink();
+        await loginPage.signup(name, email);
+
+        // Fill details and create account
+        await this.fillAccountDetails(userDetails);
+        await this.clickCreateAccountButton();
+        await this.clickContinueButton();
+        await utils.removeAdIfVisible();
     }
 }

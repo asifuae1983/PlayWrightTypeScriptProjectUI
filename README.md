@@ -1,6 +1,37 @@
 # Automation Exercise Test Suite
 
-This repository contains an automated test suite for [https://automationexercise.com](https://automationexercise.com) using Playwright with JavaScript.
+This repository contains an automated test suite for [https://automationexercise.com](https://automationexercise.com) using Playwright with TypeScript, following industry best practices.
+
+## 🏗️ Architecture & Best Practices
+
+This test suite implements industry-standard practices for maintainable and scalable test automation:
+
+### ✅ **Page Object Model (POM)**
+- **Actions in Page Objects**: All interactions (clicks, navigation, form filling) are encapsulated in page object methods
+- **Validations in Tests**: All assertions and expectations remain in test files for clarity
+- **Separation of Concerns**: Clean separation between test logic and page interactions
+
+### 🔧 **Helper Methods & Utilities**
+- **UserSetupHelper**: Centralized user data generation and management
+- **Utils**: Common utility functions for data loading and browser interactions
+- **Reusable Components**: Modular design for easy maintenance and updates
+
+### 📋 **Test Structure**
+- **Test Steps**: Uses `test.step()` for clear test organization and better reporting
+- **Atomic Tests**: Each test is independent and can run in isolation
+- **Data-Driven**: External JSON files for test data management
+
+### 🛡️ **Reliability Features**
+- **Modal Management**: Automatic handling of blocking modals and popups
+- **Wait Strategies**: Strategic waits for dynamic content and API responses
+- **Error Handling**: Comprehensive error handling with detailed logging
+- **Retry Logic**: Built-in retry mechanisms for flaky interactions
+
+### 📊 **Reporting & Debugging**
+- **Allure Integration**: Enhanced reporting with test steps and attachments
+- **Detailed Logging**: Comprehensive console logging for debugging
+- **Screenshots**: Automatic screenshots on failures
+- **Test Artifacts**: Trace files and network logs for troubleshooting
 
 ## Test Cases
 
@@ -9,45 +40,42 @@ Below is a detailed list of all implemented test cases, including their script f
 ---
 ### Test Case 1: Register User
 
-*   **Script File:** `registerUser.spec.js`
+*   **Script File:** `registerUser.spec.ts`
 *   **Priority:** Critical
-*   **Objective:** Validates the new user registration process, login after registration, and account deletion.
+*   **Objective:** Validates the complete user lifecycle including registration, login verification, and account deletion using helper methods and test steps.
 
-*   **Detailed Steps Performed:**
-    1.  Navigate to the application's home page.
-    2.  Verify the home page is visible (e.g., by checking for the main slider).
-    3.  Click on the 'Signup / Login' link in the header.
-    4.  Verify 'New User Signup!' text is visible.
-    5.  Enter a randomly generated name and email into the signup form.
-    6.  Click the 'Signup' button.
-    7.  Verify 'ENTER ACCOUNT INFORMATION' text is visible on the signup page.
-    8.  Fill in account information: Title, Password, Date of Birth.
-    9.  Select checkboxes for newsletter and special offers (based on test data).
-    10. Fill in address information: First name, Last name, Company, Address 1, Address 2, Country, State, City, Zipcode, Mobile Number.
-    11. Click the 'Create Account' button.
-    12. Verify 'ACCOUNT CREATED!' message is visible.
-    13. Click the 'Continue' button.
-    14. Verify that 'Logged in as [username]' is visible in the header.
-    15. Click the 'Delete Account' link in the header.
-    16. Verify 'ACCOUNT DELETED!' message is visible.
-    17. Click the 'Continue' button.
+*   **Test Structure:** Split into focused, atomic tests:
+    1. **User Registration Test**: Creates new user account with generated data
+    2. **Login Verification Test**: Validates login with registered credentials
+    3. **Account Deletion Test**: Ensures proper account cleanup
+
+*   **Implementation Details:**
+    - Uses `UserSetupHelper` for consistent user data generation
+    - Implements `test.step()` for clear test organization and reporting
+    - Separates actions (page objects) from validations (test files)
+    - Includes comprehensive error handling and modal management
 
 *   **Page Objects Used and Their Purpose:**
-    *   `HomePage` (`pages/HomePage.js`):
-        *   `goto()`: To navigate to the application's base URL.
-        *   `isSliderVisible()`: To verify the home page is loaded.
-        *   `clickSignupLoginLink()`: To navigate to the Signup/Login page.
-        *   `isLoggedInAsVisible(username)`: To verify the user is logged in.
-        *   `clickDeleteAccountLink()`: To initiate account deletion.
-        *   `isAccountDeletedVisible()`: To verify the account deletion confirmation message.
-        *   `clickDeleteContinueButton()`: To continue after account deletion.
-    *   `LoginPage` (`pages/LoginPage.js`):
-        *   `isSignupFormVisible()`: To verify the 'New User Signup!' section is present.
-        *   `signup(name, email)`: To fill the initial signup form (name and email) and submit.
-    *   `SignupPage` (`pages/SignupPage.js`):
-        *   `isAccountInfoTextVisible()`: To verify the 'ENTER ACCOUNT INFORMATION' section is present.
-        *   `fillAccountInformation(...)`: To fill user's account details.
-        *   `fillAddressInformation(...)`: To fill user's address details.
+    *   `HomePage` (`pages/HomePage.ts`):
+        *   `goto()`: Navigate to application base URL
+        *   `verifyHomePage()`: Validate home page visibility
+        *   `clickSignupLoginLink()`: Navigate to Signup/Login page
+        *   `isLoggedInAsVisible(username)`: Verify user login status
+        *   `performAccountDeletion()`: Complete account deletion workflow
+    *   `LoginPage` (`pages/LoginPage.ts`):
+        *   `isSignupFormVisible()`: Verify signup form presence
+        *   `signup(name, email)`: Handle initial signup form submission
+        *   `login(email, password)`: Handle user login process
+    *   `SignupPage` (`pages/SignupPage.ts`):
+        *   `isAccountInfoTextVisible()`: Verify account information section
+        *   `fillAccountInformation(userData)`: Complete account details form
+        *   `fillAddressInformation(userData)`: Complete address details form
+        *   `clickCreateAccountButton()`: Submit registration form
+        *   `isAccountCreatedVisible()`: Verify account creation success
+        *   `clickContinueButton()`: Continue after account creation
+    *   `UserSetupHelper` (`helpers/UserSetupHelper.ts`):
+        *   `generateUserData()`: Create consistent test user data
+        *   `createCompleteUser()`: End-to-end user creation workflow
         *   `clickCreateAccountButton()`: To submit the registration form.
         *   `isAccountCreatedVisible()`: To verify the 'ACCOUNT CREATED!' message.
         *   `clickContinueButton()`: To proceed after account creation.
@@ -57,38 +85,29 @@ Below is a detailed list of all implemented test cases, including their script f
 ---
 ### Test Case 2: Login User with correct email and password
 
-*   **Script File:** `loginUserCorrectCredentials.spec.js`
+*   **Script File:** `loginUserCorrectCredentials.spec.ts`
 *   **Priority:** Critical
-*   **Objective:** Validates login with correct credentials and subsequent account deletion.
+*   **Objective:** Validates login with correct credentials and subsequent account deletion using helper methods.
 
-*   **Detailed Steps Performed:**
-    1.  (Before All Tests in file) Register a new user with unique credentials and log out.
-    2.  Navigate to the application's home page.
-    3.  Verify the home page is visible.
-    4.  Click on the 'Signup / Login' link.
-    5.  Verify 'Login to your account' text is visible.
-    6.  Enter the pre-registered correct email address and password.
-    7.  Click the 'login' button.
-    8.  Verify that 'Logged in as [username]' is visible.
-    9.  Click the 'Delete Account' button.
-    10. Verify that 'ACCOUNT DELETED!' is visible and click 'Continue'.
+*   **Implementation Features:**
+    - Pre-test user setup using `UserSetupHelper`
+    - Test steps for clear reporting and debugging
+    - Comprehensive error handling and modal management
+    - Clean separation of actions and validations
 
 *   **Page Objects Used and Their Purpose:**
-    *   `HomePage` (`pages/HomePage.js`):
-        *   `goto()`: To navigate to the home page.
-        *   `isSliderVisible()`: To verify home page visibility.
-        *   `clickSignupLoginLink()`: To go to the login page.
-        *   `isLoggedInAsVisible(username)`: To confirm successful login.
-        *   `clickDeleteAccountLink()`: To delete the account.
-        *   `isAccountDeletedVisible()`: To verify account deletion.
-        *   `clickDeleteContinueButton()`: To continue after deletion.
-    *   `LoginPage` (`pages/LoginPage.js`):
-        *   `isLoginFormVisible()`: To ensure the login form is present.
-        *   `login(email, password)`: To fill login credentials and submit.
-    *   `SignupPage` (`pages/SignupPage.js`) (Used in `beforeAll`):
-        *   Methods for user registration (`fillAccountInformation`, `fillAddressInformation`, etc.) to create the test user.
-    *   `Utils` (`utils/utils.js`) / `faker`:
-        *   For generating user data for the initial registration in `beforeAll`.
+    *   `HomePage` (`pages/HomePage.ts`):
+        *   `goto()`: Navigate to home page
+        *   `verifyHomePage()`: Validate home page visibility
+        *   `clickSignupLoginLink()`: Navigate to login page
+        *   `isLoggedInAsVisible(username)`: Confirm successful login
+        *   `performAccountDeletion()`: Complete account deletion workflow
+    *   `LoginPage` (`pages/LoginPage.ts`):
+        *   `isLoginFormVisible()`: Ensure login form presence
+        *   `login(email, password)`: Handle login credentials and submission
+    *   `UserSetupHelper` (`helpers/UserSetupHelper.ts`):
+        *   `generateUserData()`: Create test user data
+        *   `createCompleteUser()`: End-to-end user registration for test setup
 
 ---
 ### Test Case 3: Login User with incorrect email and password
@@ -367,36 +386,40 @@ Below is a detailed list of all implemented test cases, including their script f
 ---
 ### Test Case 12: Add Products in Cart
 
-*   **Script File:** `addProductsInCart.spec.js`
+*   **Script File:** `addProductsInCart.spec.ts`
 *   **Priority:** Critical
-*   **Objective:** Tests adding multiple products to the cart and verifying their details (price, quantity, total).
+*   **Objective:** Tests adding multiple products to cart and verifying their details, with robust modal management and error handling.
 
-*   **Detailed Steps Performed:**
-    1.  Navigate to the application's home page.
-    2.  Verify the home page is visible.
-    3.  Click the 'Products' link.
-    4.  Verify the 'ALL PRODUCTS' page is visible.
-    5.  Hover over the first product and click 'Add to cart'.
-    6.  Click the 'Continue Shopping' button in the modal.
-    7.  Hover over the second product and click 'Add to cart'.
-    8.  Click the 'View Cart' button (either in modal or header link).
-    9.  Verify both products are added to the Cart.
-    10. Verify their prices, quantity (should be 1 for each), and total price for each product.
+*   **Key Features & Improvements:**
+    - **Data-Driven**: Uses external JSON file for product configuration
+    - **Modal Management**: Automatically handles blocking modals after adding products
+    - **Type Safety**: Full TypeScript implementation with proper interfaces
+    - **Test Steps**: Clear step organization for better reporting and debugging
+    - **Helper Methods**: Centralized cart operations for reusability
+
+*   **Technical Implementation:**
+    - `addMultipleProductsToCart()`: Robust method that adds products and manages modals
+    - `navigateToCart()`: Includes modal closure to prevent UI blocking
+    - `verifyProductsInCart()`: Comprehensive validation of product details
+    - **Bug Fix**: Resolved modal blocking issue that prevented cart navigation
 
 *   **Page Objects Used and Their Purpose:**
-    *   `HomePage` (`pages/HomePage.js`):
-        *   `goto()`: To navigate to the home page.
-        *   `clickProductsLink()`: To go to the products page.
-        *   `clickCartLink()`: To navigate to the cart page (if 'View Cart' from header is used).
-    *   `ProductsPage` (`pages/ProductsPage.js`):
-        *   `isAllProductsVisible()`: To verify products page.
-        *   `addProductToCartByName(productName)`: To add a specific product to the cart. (Test might use indices or more generic selectors too).
-        *   `clickContinueShopping()`: To close the 'Added!' modal.
-        *   `clickViewCartLinkInModal()`: (Alternative) To navigate to cart from modal.
-    *   `CartPage` (`pages/CartPage.js`):
-        *   `isShoppingCartVisible()`: To verify cart page.
-        *   `getCartItemCount()`: To check number of items.
-        *   Methods to get product details in cart (name, price, quantity, total for each item) e.g., `getProductDetailsInCart(productName)`.
+    *   `HomePage` (`pages/HomePage.ts`):
+        *   `goto()`: Navigate to home page
+        *   `clickProductsLink()`: Navigate to products page
+        *   `clickCartLink()`: Navigate to cart (with modal safety)
+    *   `ProductsPage` (`pages/ProductsPage.ts`):
+        *   `navigateToProductsPage()`: Complete navigation with validation
+        *   `addMultipleProductsToCart(products)`: Add products with modal management
+        *   `addProductToCartByName(name)`: Individual product addition
+        *   `clickContinueShopping()`: Close modal after adding products
+        *   `getProductPriceFromListing()`: Extract product pricing information
+    *   `CartPage` (`pages/CartPage.ts`):
+        *   `navigateToCart()`: Safe navigation with modal closure
+        *   `closeModalIfOpen()`: Utility to handle any blocking modals
+        *   `verifyProductsInCart()`: Comprehensive cart validation
+        *   `verifyProductDetails()`: Individual product detail verification
+    *   **Test Data**: `test-data/products.json` - External configuration for test products
 
 ---
 ### Test Case 13: Verify Product quantity in Cart
@@ -866,6 +889,25 @@ Playwright tests can be executed using the `npx playwright test` command.
     ```bash
     npx playwright test --headed
     ```
+# Automation Exercise Test Suite
+
+This repository contains an automated test suite for [https://automationexercise.com](https://automationexercise.com) using Playwright with JavaScript.
+
+## Test Environment Configuration
+
+This test suite supports multiple environments such as **development (dev)**, **quality assurance (qa)**, and **production (prod)**. The environment-specific settings are managed via the following files:
+
+- `envConfig.ts`: Contains environment-specific variables such as base URLs, credentials, and other configuration values.
+- `playwright.config.ts`: Configures Playwright test runner settings, including environment selection and test options.
+
+### Selecting the Environment
+
+You can specify the environment when running tests by setting an environment variable or passing a parameter, depending on your setup. For example:
+
+```bash
+# Run tests against the QA environment
+set ENV=qa
+npx playwright test
 
 4.  **Run tests on a specific browser:**
     ```bash
@@ -873,10 +915,35 @@ Playwright tests can be executed using the `npx playwright test` command.
     # Other options: --browser=firefox, --browser=webkit, or --browser=all
     ```
 
-5.  **Run tests with UI Mode (for debugging, exploring, and seeing traces):**
-    ```bash
-    npx playwright test --ui
-    ```
+# Run tests against the DEV environment (default)
+### Test Execution
+
+Tests can be executed using the `npx playwright test` command. By default, tests run in headless mode, but you can run in headed mode (to watch the browser) or in a specific browser using the `--headed` and `--browser` options, respectively.
+
+### Test Reports
+
+After test execution, a detailed HTML report is generated in the `playwright-report` directory. This report includes test results, screenshots, and other useful information.
+
+### Viewing the Report
+
+You can view the HTML report using the following command:
+
+```bash
+npx playwright show-report
+```
+
+This will open the report in your default web browser.
+
+## Additional Configuration
+
+### Browser Selection
+
+By default, tests run in Chromium. You can specify a different browser using the `--browser` option. For example:
+
+```bash
+# Run tests in Firefox
+npx playwright test
+```
 
 6.  **View HTML Report:**
     After running tests, an HTML report is typically generated in the `playwright-report` directory.
@@ -884,11 +951,263 @@ Playwright tests can be executed using the `npx playwright test` command.
     npx playwright show-report
     ```
 
-## Project Structure
+## 📁 Project Structure
 
-*   `tests/`: Contains all the test script files (`.spec.js`).
-*   `pages/`: Contains Page Object Model files, abstracting page interactions.
-*   `test-data/`: Contains JSON files for test data (users, products, form data).
-*   `utils/`: Contains utility functions used across tests.
-*   `playwright.config.js`: Configuration file for Playwright.
-*   `package.json`: Defines project dependencies and scripts.
+```
+├── tests/                          # Test specification files (.spec.ts)
+│   ├── registerUser.spec.ts        # User registration and lifecycle tests
+│   ├── loginUserCorrectCredentials.spec.ts # Login validation tests
+│   ├── addProductsInCart.spec.ts    # Cart functionality tests
+│   └── ...
+├── pages/                          # Page Object Model files (.ts)
+│   ├── HomePage.ts                 # Home page interactions and navigation
+│   ├── LoginPage.ts                # Login/signup form interactions
+│   ├── SignupPage.ts               # User registration form handling
+│   ├── ProductsPage.ts             # Product listing and cart operations
+│   ├── CartPage.ts                 # Shopping cart verification and management
+│   └── ...
+├── helpers/                        # Helper classes for common workflows
+│   ├── UserSetupHelper.ts          # User data generation and management
+│   └── ...
+├── utils/                          # Utility functions and common operations
+│   ├── utils.ts                    # Core utility functions
+│   └── ...
+├── types/                          # TypeScript type definitions
+│   ├── testData.ts                 # Data structure interfaces
+│   └── ...
+├── test-data/                      # External test data files
+│   ├── users.json                  # User test data
+│   ├── products.json               # Product test data
+│   └── ...
+├── allure-results/                 # Allure test results
+├── playwright-report/              # HTML test reports
+├── test-results/                   # Test execution artifacts
+├── playwright.config.ts            # Playwright configuration
+├── tsconfig.json                   # TypeScript configuration
+└── package.json                    # Project dependencies and scripts
+```
+
+## 🛠️ Prerequisites
+
+*   **Node.js** (version 18.x or higher recommended)
+*   **npm** (usually comes with Node.js)
+*   **Git** (for cloning the repository)
+*   **TypeScript** (installed as project dependency)
+
+## 🚀 Setup
+
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository_url>
+    cd PlayWrightTypeScriptProjectUI
+    ```
+
+2.  **Install dependencies:**
+    This will install Playwright, TypeScript, and other necessary packages defined in `package.json`.
+    ```bash
+    npm install
+    ```
+
+3.  **Install Playwright browsers:**
+    This command installs the default browsers for Playwright (Chromium, Firefox, WebKit).
+    ```bash
+    npx playwright install
+    ```
+
+4.  **Verify TypeScript compilation:**
+    ```bash
+    npx tsc --noEmit
+    ```
+
+## 🧪 Running Tests
+
+Playwright tests can be executed using the `npx playwright test` command with various options:
+
+### Basic Test Execution
+
+1.  **Run all tests:**
+    ```bash
+    npx playwright test
+    ```
+
+2.  **Run a specific test file:**
+    ```bash
+    npx playwright test tests/registerUser.spec.ts
+    npx playwright test tests/addProductsInCart.spec.ts
+    ```
+
+3.  **Run tests with specific pattern:**
+    ```bash
+    npx playwright test --grep "should add specified products"
+    ```
+
+### Development and Debugging
+
+4.  **Run tests in headed mode (watch the browser):**
+    ```bash
+    npx playwright test --headed
+    ```
+
+5.  **Run tests on a specific browser:**
+    ```bash
+    npx playwright test --project=chromium
+    npx playwright test --project=firefox
+    npx playwright test --project=webkit
+    ```
+
+6.  **Debug tests with Playwright Inspector:**
+    ```bash
+    npx playwright test --debug
+    ```
+
+### Reporting and Analysis
+
+7.  **Generate and view HTML report:**
+    ```bash
+    npx playwright test
+    npx playwright show-report
+    ```
+
+8.  **Run tests with Allure reporting:**
+    ```bash
+    npm run test:allure
+    npm run allure:serve
+    ```
+
+## 🏃‍♂️ Continuous Integration
+
+For CI/CD environments, use headless mode with specific output formats:
+
+```bash
+# CI-friendly execution
+npx playwright test --reporter=github
+
+# With custom configuration
+npx playwright test --config=playwright.config.ci.ts
+```
+
+## 🔧 Test Environment Configuration
+
+This test suite supports multiple environments:
+
+### Environment Files
+- `playwright.config.ts`: Main Playwright configuration
+- `tsconfig.json`: TypeScript compilation settings
+- `test-data/*.json`: Environment-specific test data
+
+### Environment Selection
+```bash
+# Run tests against different environments
+ENV=qa npx playwright test
+ENV=staging npx playwright test
+ENV=prod npx playwright test
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues and Solutions
+
+1. **Modal Blocking Issues:**
+   - The test suite includes automatic modal management
+   - If tests fail due to blocking modals, check the console logs for modal state
+
+2. **Element Not Found:**
+   - Tests include robust wait strategies and retry logic
+   - Check if selectors need updating for application changes
+
+3. **TypeScript Compilation Errors:**
+   ```bash
+   # Check for TypeScript errors
+   npx tsc --noEmit
+   ```
+
+4. **Test Data Issues:**
+   - Verify test data files in `test-data/` directory
+   - Ensure data format matches TypeScript interfaces in `types/`
+
+### Debugging Steps
+
+1. **Run with detailed logging:**
+   ```bash
+   DEBUG=pw:api npx playwright test
+   ```
+
+2. **Run single test with trace:**
+   ```bash
+   npx playwright test --trace on tests/addProductsInCart.spec.ts
+   ```
+
+3. **View trace files:**
+   ```bash
+   npx playwright show-trace test-results/trace.zip
+   ```
+
+## 📈 Reporting
+
+### HTML Reports
+- Generated automatically after test runs
+- Located in `playwright-report/` directory
+- View with `npx playwright show-report`
+
+### Allure Reports
+- Enhanced reporting with test steps and attachments
+- Setup: `npm install -g allure-commandline`
+- Generate: `npm run allure:generate`
+- Serve: `npm run allure:serve`
+
+### Console Logging
+- Detailed execution logs for debugging
+- Product addition confirmations
+- Modal state management logs
+- Error context and troubleshooting information
+
+## 🔄 Test Independence
+
+All test cases are designed to be **independent and atomic**:
+
+- ✅ Each test manages its own setup and cleanup
+- ✅ Tests can run in any order without dependencies
+- ✅ User data is generated uniquely for each test run
+- ✅ Account cleanup ensures no test data pollution
+
+## 🏗️ Extending the Test Suite
+
+### Adding New Tests
+1. Create new `.spec.ts` file in `tests/` directory
+2. Follow existing patterns for test structure and steps
+3. Use helper methods and page objects for consistency
+
+### Adding New Page Objects
+1. Create new `.ts` file in `pages/` directory
+2. Implement locators and action methods
+3. Keep validations in test files, actions in page objects
+
+### Adding Test Data
+1. Add data to appropriate `.json` file in `test-data/`
+2. Update TypeScript interfaces in `types/`
+3. Use `Utils.loadTestData()` to access data in tests
+
+## 🎉 Recent Improvements & Achievements
+
+### ✅ **Successfully Completed Refactoring**
+- **TypeScript Migration**: Complete conversion from JavaScript to TypeScript with full type safety
+- **Industry Best Practices**: Implementation of Page Object Model with proper separation of concerns
+- **Helper Methods**: Centralized common workflows for better maintainability
+- **Test Steps**: Enhanced reporting and debugging with `test.step()` implementation
+
+### 🐛 **Critical Bug Fixes**
+- **Modal Blocking Issue**: Resolved cart navigation failures caused by unhandled modals
+- **Element Interaction**: Improved wait strategies and error handling
+- **Test Stability**: Enhanced reliability through robust locator strategies
+
+### 🏗️ **Architecture Improvements**
+- **Code Organization**: Clean separation between actions (page objects) and validations (tests)
+- **Reusability**: Helper methods reduce code duplication across test files
+- **Data Management**: External JSON files for test data with proper TypeScript interfaces
+- **Error Handling**: Comprehensive error handling with detailed logging
+
+---
+
+**📝 Note**: This test suite demonstrates modern test automation practices and serves as a reference implementation for Playwright with TypeScript projects.
+
+

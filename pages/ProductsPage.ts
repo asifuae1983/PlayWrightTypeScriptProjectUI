@@ -1,4 +1,11 @@
 import { type Page, type Locator, expect } from '@playwright/test';
+import { HomePage } from './HomePage';
+import type { Product as ProductType } from 'types/testData';
+
+interface ExpectedProductInCart extends ProductType {
+  quantity: number;
+  displayPrice?: string;
+}
 
 export class ProductsPage {
     readonly page: Page;
@@ -275,4 +282,40 @@ export class ProductsPage {
     async isWriteYourReviewVisible(): Promise<boolean> {
         return await this.writeYourReviewTextForm.isVisible();
     }
+
+    async navigateToProductsPage(page: Page): Promise<void> {
+        const homePage = new HomePage(page);
+        await homePage.clickProductsLink();
+        await expect(page).toHaveURL('https://automationexercise.com/products');
+        await expect(this.allProductsText).toBeVisible();
+    }
+
+    async addMultipleProductsToCart(products: ProductType[]): Promise<ExpectedProductInCart[]> {
+        const addedProducts: ExpectedProductInCart[] = [];
+
+        for (let i = 0; i < products.length; i++) {
+            const product = products[i];
+            if (!product?.name || !product?.price) {
+                console.warn(`Skipping invalid product at index ${i}`);
+                continue;
+            }
+
+            const productPrice = await this.getProductPriceFromListing(product.name);
+            await this.addProductToCartByName(product.name);
+            addedProducts.push({ 
+                ...product, 
+                quantity: 1, 
+                displayPrice: productPrice 
+            });
+
+            // Always close the modal after adding a product
+            await this.clickContinueShopping();
+
+            console.log(`✅ Added product to cart: ${product.name}`);
+        }
+
+        return addedProducts;
+    }
 }
+
+export type { ExpectedProductInCart };

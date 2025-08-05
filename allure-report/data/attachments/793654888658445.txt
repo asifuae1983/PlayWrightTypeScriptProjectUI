@@ -1,4 +1,0 @@
-Filled company: Rodriguez, Schiller and Macejkovic
-Locator  : getByText('Blue Top', { exact: true }).first()
-Count    : 1
-Cleaned full name: Mr. Elmer Wisoky

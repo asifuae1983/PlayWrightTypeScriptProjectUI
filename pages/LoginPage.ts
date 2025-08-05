@@ -1,7 +1,9 @@
-import { type Page, type Locator } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
+import { Utils } from '../utils/utils';
+import { HomePage } from './HomePage';
 
 export class LoginPage {
-    readonly page: Page;
+    private page: Page;
     readonly loginForm: Locator;
     readonly loginEmailInput: Locator;
     readonly loginPasswordInput: Locator;
@@ -83,5 +85,64 @@ export class LoginPage {
 
     async isSignupFormVisible(): Promise<boolean> {
         return await this.newUserSignupText.isVisible(); // Check for title visibility
+    }
+
+    // New reusable methods for common login workflows
+    async navigateToLoginPage(): Promise<void> {
+        const homePage = new HomePage(this.page);
+        await homePage.clickSignupLoginLink();
+        await expect(this.loginToYourAccountText).toBeVisible();
+    }
+
+    async performLogin(email: string, password: string): Promise<void> {
+        const utils = new Utils(this.page);
+        
+        // Actions only - no validations
+        await this.login(email, password);
+        await utils.removeAdIfVisible();
+        
+        // Remove the waitForSelector - let the test handle validation
+        // The test will validate the login success with the correct username
+    }
+
+    async performCompleteLogin(email: string, password: string, username: string): Promise<void> {
+        const homePage = new HomePage(this.page);
+        const utils = new Utils(this.page);
+        
+        // Navigate and login (actions)
+        await homePage.clickSignupLoginLink();
+        await this.performLogin(email, password);
+        
+        // Wait for login completion (technical wait, not business validation)
+        const loggedInAsSelector = homePage.loggedInAsTextSelector(username);
+        try {
+            await this.page.waitForSelector(loggedInAsSelector, { timeout: 10000 });
+        } catch (e) {
+            console.log("Login completion wait failed, attempting refresh...");
+            await this.page.reload({ waitUntil: 'domcontentloaded' });
+            await utils.removeAdIfVisible();
+            await this.page.waitForSelector(loggedInAsSelector, { timeout: 15000 });
+        }
+    }
+
+    async verifyUserLoggedIn(username: string): Promise<void> {
+        const homePage = new HomePage(this.page);
+        const loggedInAsSelector = homePage.loggedInAsTextSelector(username);
+        const utils = new Utils(this.page);
+        
+        try {
+            await this.page.waitForSelector(loggedInAsSelector, { timeout: 10000 });
+        } catch (e) {
+            console.log("'Logged in as' not visible after login, attempting to refresh and check again.");
+            await this.page.reload({ waitUntil: 'domcontentloaded' });
+            await utils.removeAdIfVisible();
+            await this.page.waitForSelector(loggedInAsSelector, { timeout: 15000 });
+        }
+        await expect(this.page.locator(loggedInAsSelector)).toBeVisible();
+    }
+
+    async loginAndVerify(email: string, password: string, username: string): Promise<void> {
+        await this.performCompleteLogin(email, password, username);
+        await this.verifyUserLoggedIn(username);
     }
 }

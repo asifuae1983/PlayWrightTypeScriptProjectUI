@@ -1,3 +1,0 @@
-Locator  : getByText('Blue Top', { exact: true }).first()
-Count    : 1
-Extracted full name: . LoginBeforeCO16e6b9ca PreCheckout

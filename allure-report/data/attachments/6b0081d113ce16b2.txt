@@ -1,3 +1,0 @@
-Filled company: PreReg Inc.
-Locator  : getByText('Men Tshirt', { exact: true }).first()
-Count    : 1

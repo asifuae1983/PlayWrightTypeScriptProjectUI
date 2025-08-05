@@ -1,3 +1,0 @@
-Locator  : getByText('Men Tshirt', { exact: true }).first()
-Count    : 1
-Cleaned full name: Mr. RegBeforeCO6a3833fd BeforeCheckout

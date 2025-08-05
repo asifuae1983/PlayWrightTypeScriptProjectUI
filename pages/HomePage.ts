@@ -1,8 +1,8 @@
-import { expect } from '@playwright/test';
-import { type Page, type Locator } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
+import { Utils } from '../utils/utils';
 
 export class HomePage {
-    readonly page: Page;
+    private page: Page;
     readonly slider: Locator;
     readonly homeLink: Locator;
     readonly productsLink: Locator;
@@ -54,7 +54,8 @@ export class HomePage {
         this.recommendedItemsSection = page.locator('.recommended_items');
         this.addedModal = page.locator('.modal-content');
         this.viewCartLinkInModal = page.locator('.modal-body a[href="/view_cart"]');
-        this.deleteAccountLink = page.locator('a[href="/delete_account"]');
+        // this.deleteAccountLink = page.locator('a[href="/delete_account"]');
+        this.deleteAccountLink = page.getByRole('link', { name: 'Delete Account' });
         this.logoutLink = page.locator('a[href="/logout"]');
         this.accountDeletedText = page.locator('h2[data-qa="account-deleted"]');
         this.deleteContinueButton = page.locator('a[data-qa="continue-button"]');
@@ -236,5 +237,32 @@ export class HomePage {
         const locator = this.page.locator('a:has(i.fa-user)');
         if (await locator.count() === 0) return null;
         return (await locator.first().textContent())?.replace(/\s+/, ' ').trim() || null;
+    }
+
+    // New method for account deletion workflow
+    async performAccountDeletion(): Promise<void> {
+        const utils = new Utils(this.page);
+        
+        // Actions only - no validations
+        await utils.removeAdIfVisible();
+        await this.clickDeleteAccountLink();
+        await utils.removeAdIfVisible();
+        
+        // Wait for delete confirmation to appear (action, not validation)
+        try {
+            await this.page.waitForSelector('[data-qa="account-deleted"]', { timeout: 10000 });
+        } catch (e) {
+            console.log("Account deleted text not visible, attempting to refresh and check again.");
+            await this.page.reload({ waitUntil: 'domcontentloaded' });
+            await utils.removeAdIfVisible();
+            await this.page.waitForSelector('[data-qa="account-deleted"]', { timeout: 15000 });
+        }
+        
+        await this.clickDeleteContinueButton();
+    }
+
+    async verifyHomePage(): Promise<void> {
+        await expect(this.page).toHaveURL('https://automationexercise.com/');
+        await expect(this.slider).toBeVisible();
     }
 }

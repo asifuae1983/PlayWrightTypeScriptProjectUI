@@ -1,4 +1,0 @@
-Filled company: Emmerich, Gottlieb and Wisozk
-Locator  : getByText('Blue Top', { exact: true }).first()
-Count    : 1
-Cleaned full name: Mr. Pansy Bins
