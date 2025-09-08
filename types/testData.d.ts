@@ -1,6 +1,11 @@
 // types/testData.d.ts
 
-// For users.json
+// ===================== USERS DATA STRUCTURES =====================
+
+/**
+ * Represents a user's address details.
+ * Used as a base for user-related data and can be extended.
+ */
 export interface UserAddress {
   firstName?: string;
   lastName?: string; // Optional because some user entries might only have prefixes for generation
@@ -14,19 +19,27 @@ export interface UserAddress {
   mobileNumber?: string;
 }
 
+/**
+ * Represents a complete user data object for test scenarios.
+ * Extends UserAddress and adds registration/login-specific fields.
+ */
 export interface UserData extends UserAddress {
-  title?: 'Mr' | 'Mrs' | 'Ms'; // Added 'Ms'
-  namePrefix?: string;
-  emailPrefix?: string;
+  title?: 'Mr' | 'Mrs' | 'Ms'; // User's title
+  namePrefix?: string;         // Used for generating random names
+  emailPrefix?: string;        // Used for generating random emails
   password?: string;
   dobDay?: string;
-  dobMonth?: string; // Could be string like "5" or "January"
+  dobMonth?: string;           // Could be string like "5" or "January"
   dobYear?: string;
   newsletter?: boolean;
   optin?: boolean;
   // UserAddress fields are flattened into UserData as per users.json structure
 }
 
+/**
+ * Represents the structure of the users.json file.
+ * Each property corresponds to a user scenario and contains UserData.
+ */
 export interface UsersFile {
   registerUser: UserData;
   loginUserCorrect: UserData;
@@ -38,17 +51,25 @@ export interface UsersFile {
   // Add other top-level user keys if present in the future
 }
 
-// For products.json
+// ===================== PRODUCTS DATA STRUCTURES =====================
+
+/**
+ * Represents a single product's data for product-related tests.
+ */
 export interface Product {
   id?: string | number;
-  idForCartInteractions?: string; // Based on observed data "1", "2"
+  idForCartInteractions?: string; // Used for cart actions, e.g. "1", "2"
   name: string;
-  price?: string; // Optional as not all product entries might have it (e.g. if only name is needed)
+  price?: string;                 // Optional as not all product entries might have it
   brand?: string;
   category?: string;
   quantity?: number;
 }
 
+/**
+ * Represents the structure of the products.json file.
+ * Contains configuration for various product-related test scenarios.
+ */
 export interface ProductsFile {
   searchProduct: {
     searchTerm: string;
@@ -68,7 +89,11 @@ export interface ProductsFile {
   // Add other top-level product keys if present
 }
 
-// For formData.json
+// ===================== FORM DATA STRUCTURES =====================
+
+/**
+ * Represents the data required for the Contact Us form.
+ */
 export interface ContactUsData {
   namePrefix?: string;
   emailPrefix?: string;
@@ -80,14 +105,20 @@ export interface ContactUsData {
   testFileContent: string;
 }
 
+/**
+ * Represents the data required for submitting a product review.
+ */
 export interface ReviewData {
-    namePrefix?: string;
-    emailPrefix?: string;
-    name?: string; // Optional if generated
-    email?: string; // Optional if generated
-    reviewMessage: string;
+  namePrefix?: string;
+  emailPrefix?: string;
+  name?: string; // Optional if generated
+  email?: string; // Optional if generated
+  reviewMessage: string;
 }
 
+/**
+ * Represents payment details for checkout/payment tests.
+ */
 export interface PaymentDetails {
   nameOnCard: string;
   cardNumber: string;
@@ -96,11 +127,18 @@ export interface PaymentDetails {
   expiryYear: string;
 }
 
+/**
+ * Represents data for email subscription tests.
+ */
 export interface SubscriptionData {
-    emailPrefix: string;
-    expectedSuccessMessage: string;
+  emailPrefix: string;
+  expectedSuccessMessage: string;
 }
 
+/**
+ * Represents the structure of the formData.json file.
+ * Contains configuration for various form-related test scenarios.
+ */
 export interface FormDataFile {
   contactUs: ContactUsData;
   review: ReviewData; // Added ReviewData

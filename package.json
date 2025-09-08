@@ -10,20 +10,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/asifqa123/Selenium_TestNG.git"
+    "url": "git+https://github.com/asifuae1983/PlayWrightTypeScriptProjectUI.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/asifqa123/Selenium_TestNG/issues"
+    "url": "https://github.com/asifuae1983/PlayWrightTypeScriptProjectUI/issues"
   },
-  "homepage": "https://github.com/asifqa123/Selenium_TestNG#readme",
+  "homepage": "https://github.com/asifuae1983/PlayWrightTypeScriptProjectUI#readme",
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
     "@types/node": "^22.15.29",
     "allure-playwright": "^3.2.2",
     "playwright": "^1.52.0",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "cross-env": "^10.0.0",
+    "dotenv": "^17.2.2"
   }
 }

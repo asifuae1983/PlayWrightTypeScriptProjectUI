@@ -14,7 +14,6 @@ export class ContactUsPage {
 
     constructor(page: Page) {
         this.page = page;
-        // this.getInTouchText = page.locator('h2:has-text("Get In Touch")');
         this.getInTouchText = page.getByText('Get In Touch', { exact: true });
         this.nameInput = page.locator('input[data-qa="name"]');
         this.emailInput = page.locator('input[data-qa="email"]');

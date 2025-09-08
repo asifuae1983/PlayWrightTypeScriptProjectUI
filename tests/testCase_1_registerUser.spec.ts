@@ -10,7 +10,7 @@ const usersTestData = Utils.loadTestData('users.json') as UsersFile;
 const loadedUserData: UserData = usersTestData.registerUser;
 
 test.describe('Test Case 1: Register User', () => {
-    let homePage: HomePage;
+    let homePage: HomePage; 
     let loginPage: LoginPage;
     let signupPage: SignupPage;
     let userDetails: SignupUserDetails;

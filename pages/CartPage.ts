@@ -112,8 +112,12 @@ export class CartPage {
         return false;
     }
 
+    /**
+     * Ensure the cart table is visible before trying to get names.
+     * isShoppingCartVisible() now checks this.cartTable.
+     * @returns 
+     */
     async getCartProductNames(): Promise<string[]> {
-        // Ensure the cart table is visible before trying to get names.
         // isShoppingCartVisible() now checks this.cartTable.
         if (!(await this.isShoppingCartVisible())) {
             if (await this.isEmptyCartVisible()) {

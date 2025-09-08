@@ -1,7 +1,7 @@
 import { expect, type Browser } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
-import { SignupPage, type AccountInformation, type AddressInformation } from '../pages/SignupPage';
+import { SignupPage, type AccountInformation, type AddressInformation, type SignupUserDetails  } from '../pages/SignupPage';
 import { Utils } from '../utils/utils';
 import type { UserData } from 'types/testData';
 

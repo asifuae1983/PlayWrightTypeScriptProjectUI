@@ -1,5 +1,12 @@
 import { devices, type PlaywrightTestConfig } from '@playwright/test';
 
+
+/**. This is for specifying environment file
+ * dotenv.config({
+ *   path: process.env.ENV_NAME ? `./env-files/.env.${process.env.ENV_NAME}` : `./env-files/.env.demo`
+ * });
+ */
+
 const config: PlaywrightTestConfig = {
   testDir: './tests', // Directory where test files are located
   /* Maximum time one test can run for. */
@@ -22,9 +29,10 @@ const config: PlaywrightTestConfig = {
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['list'], // Default console reporter
-    ['html', { open: 'never', outputFolder: 'playwright-report' }], // HTML reporter
+    ['html', { open: 'on-failure', outputFolder: 'html-report' }], // HTML reporter
     ['allure-playwright', {
         detail: true,
+        open: 'on-failure',
         outputFolder: 'allure-results',
         suiteTitle: false,
         environmentInfo: {
@@ -36,21 +44,15 @@ const config: PlaywrightTestConfig = {
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
-    actionTimeout: 10 * 1000, // 10 seconds for actions (increased from default 0)
+    actionTimeout: 10 * 1000, // 10 seconds for actions such as click() (increased from default 0)
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://localhost:3000', // Example, not used for automationexercise.com
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-
-    /* Headless mode configuration */
-    headless: true, // Set to false to watch tests run in a browser
-    
-    /* Viewport size */
-    // viewport: { width: 1280, height: 720 },
-
-    /* Permissions */
+    video: 'retain-on-failure',
+    screenshot: 'only-on-failure', 
+    headless: false, 
     permissions: ['clipboard-read', 'clipboard-write'],
 
     /* Ignores HTTPS errors, useful for local development with self-signed certificates */
@@ -117,6 +119,11 @@ const config: PlaywrightTestConfig = {
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   outputDir: 'test-results/',
 
+  // 🟥 Optional: for visual assertion screenshots
+  //--------------------------------------------//
+  snapshotPathTemplate: 'test-results/screenshots/{testName}-{projectName}-{arg}{ext}',
+  
+  
   /* Run your local dev server before starting the tests */
   // webServer: {
   //   command: 'npm run start',
