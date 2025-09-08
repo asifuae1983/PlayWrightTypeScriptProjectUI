@@ -1,4 +1,0 @@
-Filled company: TestCorp
-User registration completed for: John178c
-Login verification successful for: John178c
-Account deletion completed for: John178c

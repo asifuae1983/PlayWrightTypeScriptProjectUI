@@ -1,4 +1,0 @@
-Filled company: TestCorp
-User registration completed for: John2d7a
-Login verification successful for: John2d7a
-Account deletion completed for: John2d7a

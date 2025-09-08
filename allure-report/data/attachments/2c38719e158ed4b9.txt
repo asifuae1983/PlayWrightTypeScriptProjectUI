@@ -1,4 +1,0 @@
-Filled company: TestCorp
-User registration completed for: John88ad
-Login verification successful for: John88ad
-Account deletion completed for: John88ad

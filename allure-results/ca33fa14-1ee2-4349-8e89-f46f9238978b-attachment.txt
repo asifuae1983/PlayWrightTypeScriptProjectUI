@@ -1,4 +1,0 @@
-Filled company: TestCorp
-User registration completed for: John17fc
-Login verification successful for: John17fc
-Account deletion completed for: John17fc

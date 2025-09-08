@@ -1,4 +1,0 @@
-Filled company: TestCorp
-User registration completed for: Johnc423
-Login verification successful for: Johnc423
-Account deletion completed for: Johnc423

@@ -1,4 +1,0 @@
-Filled company: Marquardt, Miller and Koepp
-Locator  : getByText('Blue Top', { exact: true }).first()
-Count    : 1
-Logged in user (UI): Logged in as Vallie Expected: Vallie Vallie Strosin
