@@ -1,0 +1,3 @@
+Filled company: Heaney, O'Keefe and Kassulke
+Locator  : getByText('Blue Top', { exact: true }).first()
+Count    : 1

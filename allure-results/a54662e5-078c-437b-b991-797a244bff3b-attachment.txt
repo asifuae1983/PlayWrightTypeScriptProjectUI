@@ -1,0 +1,6 @@
+Review success message not visible within 5000ms. Error: TimeoutError: locator.waitFor: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator('#review-section') to be visible
+    7 × locator resolved to hidden <div class="form-row" id="review-section">…</div>
+    8 × locator resolved to hidden <div id="review-section" class="form-row hide">…</div>
+

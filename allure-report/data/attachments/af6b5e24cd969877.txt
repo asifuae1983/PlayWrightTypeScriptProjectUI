@@ -1,0 +1,18 @@
+Locator  : getByText('Blue Top', { exact: true }).first()
+Count    : 1
+priceElement :  Rs. 500
+Locator  : getByText('Blue Top', { exact: true }).first()
+Count    : 1
+✅ Added product to cart: Blue Top
+Locator  : getByText('Men Tshirt', { exact: true }).first()
+Count    : 1
+priceElement :  Rs. 400
+Locator  : getByText('Men Tshirt', { exact: true }).first()
+Count    : 1
+✅ Added product to cart: Men Tshirt
+✅ Successfully added 2 products to cart
+Products in cart: [ '', 'Blue Top', '', '', 'Men Tshirt', '' ]
+✅ Verified product: Blue Top
+✅ Verified product: Men Tshirt
+✅ Verified 2 products in cart
+✅ Verified all 2 products in cart
